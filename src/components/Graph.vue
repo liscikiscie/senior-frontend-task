@@ -56,8 +56,7 @@ const containerEl = ref(null)
 const graphReady = ref(false)
 let fg = null
 let lastFocusedSlug = null
-let resizeApplyTimerId = null
-let pendingResizeRect = null
+let actionTimerId = null
 
 function getDataProp() {
   return props.data
@@ -180,9 +179,23 @@ function syncGraphData(nextData) {
   fg?.graphData(nextData)
 }
 
+function getVisibleOffsetGraphCoords() {
+  const canvasW = fg.width()
+  const canvasH = fg.height()
+  const visibleW = containerEl.value?.clientWidth ?? canvasW
+  const visibleH = containerEl.value?.clientHeight ?? canvasH
+  const zoom = fg.zoom() || 1
+  return {
+    x: (canvasW - visibleW) / (2 * zoom),
+    y: (canvasH - visibleH) / (2 * zoom),
+  }
+}
+
 function centerOnSlug(slug) {
   const node = findNodeBySlug(slug)
-  if (node?.x != null) fg.centerAt(node.x, node.y, GRAPH_DIMS.centerDurationMs)
+  if (node?.x == null) return
+  const offset = getVisibleOffsetGraphCoords()
+  fg.centerAt(node.x + offset.x, node.y + offset.y, GRAPH_DIMS.centerDurationMs)
 }
 
 function fitGraphToScreen() {
@@ -190,17 +203,34 @@ function fitGraphToScreen() {
   fg.zoomToFit(GRAPH_DIMS.closeFitDurationMs, GRAPH_DIMS.fitPaddingPx)
 }
 
+function cancelActionTimer() {
+  if (actionTimerId === null) return
+  clearTimeout(actionTimerId)
+  actionTimerId = null
+}
+
+function scheduleCameraAction(action, delayMs) {
+  cancelActionTimer()
+  actionTimerId = setTimeout(function fireCameraAction() {
+    actionTimerId = null
+    action()
+  }, delayMs)
+}
+
 function focusOnSelectedNode(slug) {
+  cancelActionTimer()
   if (!slug) {
     if (lastFocusedSlug) {
       lastFocusedSlug = null
-      fitGraphToScreen()
+      scheduleCameraAction(fitGraphToScreen, GRAPH_DIMS.closeFitDelayMs)
     }
     return
   }
   if (!fg) return
   lastFocusedSlug = slug
-  centerOnSlug(slug)
+  scheduleCameraAction(function centerOnLastFocused() {
+    if (lastFocusedSlug) centerOnSlug(lastFocusedSlug)
+  }, GRAPH_DIMS.openCenterDelayMs)
 }
 
 function revealFittedGraph() {
@@ -238,27 +268,18 @@ function applyInitialSize() {
   if (width && height) fg.width(width).height(height)
 }
 
-function applyPendingResize() {
-  resizeApplyTimerId = null
-  if (!fg || !pendingResizeRect) return
-  fg.width(pendingResizeRect.width).height(pendingResizeRect.height)
-  if (props.selectedSlug && lastFocusedSlug) centerOnSlug(lastFocusedSlug)
-  pendingResizeRect = null
-}
-
 function handleContainerResize(entries) {
   if (!fg) return
-  pendingResizeRect = entries[0].contentRect
-  if (resizeApplyTimerId !== null) return
-  resizeApplyTimerId = setTimeout(applyPendingResize, GRAPH_DIMS.resizeDebounceMs)
+  const [entry] = entries
+  const { width, height } = entry.contentRect
+  const currentW = fg.width()
+  const currentH = fg.height()
+  if (width <= currentW && height <= currentH) return
+  fg.width(Math.max(width, currentW)).height(Math.max(height, currentH))
 }
 
 function teardownForceGraph() {
-  if (resizeApplyTimerId !== null) {
-    clearTimeout(resizeApplyTimerId)
-    resizeApplyTimerId = null
-  }
-  pendingResizeRect = null
+  cancelActionTimer()
   fg?.pauseAnimation()
   fg = null
   lastFocusedSlug = null
@@ -293,6 +314,7 @@ onUnmounted(function teardownGraph() {
 .graph-canvas {
   width: 100%;
   height: 100%;
+  overflow: hidden;
   opacity: 0;
   transition: opacity 0.25s ease-out;
 }
