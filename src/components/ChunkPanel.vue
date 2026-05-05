@@ -1,7 +1,5 @@
 <!--
   Task 1 — Refactoring:
-    • fmtTime() is duplicated here, in SourcesView.vue, and in PartPanel.vue.
-      Extract to src/utils/format.js and import it.
     • TYPE_LABELS below duplicates the same five keys as TYPE_COLORS in Graph.vue.
       Unify into src/utils/types.js.
 -->
@@ -47,7 +45,7 @@
           <li v-for="(s, i) in chunk.sources" :key="i" class="source-item">
             <span class="source-name">{{ s.source_name }}</span>
             <span class="source-meta">
-              Part {{ s.part_index }}{{ timeRange(s.start_seconds, s.end_seconds) }}
+              Part {{ s.part_index }}{{ formatTimeRange(s.start_seconds, s.end_seconds) }}
             </span>
             <p v-if="s.note" class="source-note">{{ s.note }}</p>
           </li>
@@ -60,6 +58,7 @@
 <script setup>
 import { computed } from 'vue'
 import { marked } from 'marked'
+import { formatTimeRange } from '../utils/format.js'
 
 // Task 1: extract to src/utils/types.js (also duplicated as TYPE_COLORS in Graph.vue)
 const TYPE_LABELS = {
@@ -68,20 +67,6 @@ const TYPE_LABELS = {
   machine_part:    'Machine Part',
   procedure:       'Procedure',
   concept:         'Concept',
-}
-
-// Task 1: extract to src/utils/format.js (also in SourcesView.vue and PartPanel.vue)
-function fmtTime(secs) {
-  if (secs == null) return null
-  const m = Math.floor(secs / 60)
-  const s = Math.floor(secs % 60)
-  return `${m}:${String(s).padStart(2, '0')}`
-}
-
-function timeRange(start, end) {
-  const s = fmtTime(start)
-  const e = fmtTime(end)
-  return s ? ` · ${s} – ${e}` : ''
 }
 
 const props = defineProps({
