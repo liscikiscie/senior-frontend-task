@@ -1,0 +1,122 @@
+/* Shared chunk/part panel styles. Imported with `<style scoped>` from both
+   ChunkPanel.vue and PartPanel.vue so the `data-v-` attribute is per-component.
+   ChunkPanel-only sections (related links, sources list) live inline in
+   ChunkPanel.vue. */
+
+.chunk-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  flex: 1;
+  min-width: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 2px 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.close-btn:hover { color: #ddd; }
+
+.type-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  padding: 2px 7px;
+  border-radius: 3px;
+  margin-bottom: 6px;
+}
+.type-process_stage   { background: #1a3a6a; color: #7db3f7; }
+.type-machine_element { background: #163a22; color: #5dbf7a; }
+.type-machine_part    { background: #0e3530; color: #4db8a0; }
+.type-procedure       { background: #5a2e0a; color: #f0a060; }
+.type-concept         { background: #32124a; color: #c090f0; }
+
+.panel-header h2 {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.summary {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.4;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  scroll-behavior: smooth;
+}
+
+/* Markdown content is injected via v-html, so its inner elements don't get
+   the scoped data-v attribute. :deep() pierces the boundary so the rules
+   target the rendered HTML. */
+.markdown-content {
+  font-size: 13px;
+  line-height: 1.65;
+  color: #ccc;
+}
+.markdown-content :deep(h1) { font-size: 17px; color: #eee; margin: 14px 0 6px; }
+.markdown-content :deep(h2) { font-size: 14px; color: #eee; margin: 12px 0 5px; }
+.markdown-content :deep(h3) { font-size: 13px; color: #ddd; margin: 10px 0 4px; }
+.markdown-content :deep(p)  { margin-bottom: 8px; }
+.markdown-content :deep(ul),
+.markdown-content :deep(ol) { margin: 6px 0 8px 18px; }
+.markdown-content :deep(li) { margin-bottom: 3px; }
+.markdown-content :deep(strong) { color: #eee; }
+.markdown-content :deep(code) {
+  background: #0f2a4a;
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-size: 11px;
+  font-family: "SF Mono", "Fira Mono", monospace;
+}
+.markdown-content :deep(pre) {
+  background: #0f2a4a;
+  border-radius: 4px;
+  padding: 10px 12px;
+  overflow-x: auto;
+  margin-bottom: 10px;
+}
+.markdown-content :deep(pre code) { background: none; padding: 0; }
+.markdown-content :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+.markdown-content :deep(th),
+.markdown-content :deep(td) { border: 1px solid #1a3a5a; padding: 4px 8px; }
+.markdown-content :deep(th) { background: #0f2a4a; color: #ccc; }
+.markdown-content :deep(blockquote) {
+  border-left: 3px solid #0f3460;
+  padding-left: 10px;
+  color: #999;
+  margin: 8px 0;
+}

@@ -66,3 +66,57 @@ const outLinks    = computed(() => props.chunk.links.filter(l => l.direction ===
 const inLinks     = computed(() => props.chunk.links.filter(l => l.direction === 'in'))
 const parsedBody  = computed(() => marked.parse(props.chunk.body_markdown || ''))
 </script>
+
+<style src="./chunk-panel.css" scoped></style>
+
+<style scoped>
+.panel-section {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #0f3460;
+}
+
+.panel-section h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: #aaa;
+  margin-bottom: 10px;
+}
+
+.link-group { margin-bottom: 12px; }
+.link-group h4 { font-size: 11px; font-weight: 600; color: #999; margin-bottom: 6px; }
+
+.link-list { list-style: none; }
+.link-list li { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+
+.link-btn {
+  background: #0f2a4a;
+  border: 1px solid #2a5080;
+  color: #f0f0f0;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.1s;
+}
+.link-btn:hover { background: #1a3a6a; color: #fff; }
+
+.link-label { font-size: 11px; color: #888; font-style: italic; }
+
+.source-list { list-style: none; }
+
+.source-item {
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  background: #0f1e38;
+  border-left: 2px solid #0f3460;
+  border-radius: 3px;
+}
+
+.source-name { display: block; font-size: 12px; font-weight: 600; color: #bbb; word-break: break-all; }
+.source-meta { display: block; font-size: 11px; color: #666; margin-top: 2px; }
+.source-note { font-size: 12px; color: #888; margin-top: 4px; line-height: 1.4; }
+</style>

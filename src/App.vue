@@ -158,3 +158,111 @@ onUnmounted(function unbindShortcuts() {
   window.removeEventListener('keydown', onWindowKeydown)
 })
 </script>
+
+<style scoped>
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 18px;
+  background: #16213e;
+  border-bottom: 1px solid #0f3460;
+  flex-shrink: 0;
+}
+
+.app-header h1 {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tabs {
+  display: flex;
+  gap: 2px;
+}
+
+.tab {
+  background: none;
+  border: 1px solid transparent;
+  color: #888;
+  font-size: 13px;
+  padding: 4px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: color 0.1s, background 0.1s;
+}
+.tab:hover { color: #ccc; }
+.tab.active {
+  background: #0f3460;
+  border-color: #1a4a80;
+  color: #e8e8e8;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.search-input {
+  background: #0f2a4a;
+  color: #e8e8e8;
+  border: 1px solid #2a5080;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 13px;
+  width: 240px;
+}
+.search-input::placeholder {
+  color: #6a7a90;
+}
+.search-input:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
+}
+
+.search-count {
+  font-size: 12px;
+  color: #999;
+  white-space: nowrap;
+}
+
+.search-clear {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 6px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+.search-clear:hover {
+  background: #1a3a6a;
+  color: #fff;
+}
+.search-clear:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
+}
+
+.status {
+  font-size: 12px;
+  color: #666;
+  white-space: nowrap;
+}
+
+.graph-pane {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #555;
+  font-size: 13px;
+}
+</style>

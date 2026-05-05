@@ -30,3 +30,5 @@ const timeRange  = computed(() => formatTimeRange(props.part.start_seconds, prop
 const langSuffix = computed(() => props.part.language ? ` · ${props.part.language}` : '')
 const parsedBody = computed(() => marked.parse(props.part.body_markdown || ''))
 </script>
+
+<style src="./chunk-panel.css" scoped></style>

@@ -107,3 +107,100 @@ watch(selectedPart, async (sp) => {
   partLoading.value = false
 })
 </script>
+
+<style scoped>
+.sources-view {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.sources-loading {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+  font-size: 13px;
+}
+
+.sources-header {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 14px;
+}
+
+.sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.source-card {
+  background: #16213e;
+  border: 1px solid #0f3460;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.source-card-header {
+  width: 100%;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  text-align: left;
+  gap: 12px;
+}
+.source-card-header:hover { background: #1a2a50; }
+
+.source-card-title { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.source-card-name { font-size: 14px; font-weight: 600; color: #e8e8e8; word-break: break-all; }
+.source-card-meta { font-size: 11px; color: #888; }
+.source-card-chevron { font-size: 10px; color: #666; flex-shrink: 0; }
+
+.source-card-body {
+  padding: 0 16px 14px;
+  border-top: 1px solid #0f3460;
+}
+
+.source-meta-grid {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 14px;
+  padding: 10px 0 12px;
+  font-size: 12px;
+}
+
+.meta-label { color: #888; white-space: nowrap; }
+.meta-value { color: #ccc; word-break: break-all; }
+
+.mono { font-family: 'SF Mono', 'Fira Mono', monospace; font-size: 11px; }
+
+.parts-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+
+.parts-table th {
+  text-align: left;
+  color: #888;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 5px 10px 5px 0;
+  border-bottom: 1px solid #0f3460;
+}
+
+.parts-table td {
+  padding: 5px 10px 5px 0;
+  color: #ccc;
+  border-bottom: 1px solid #0a1830;
+  vertical-align: top;
+}
+
+.parts-table tr:last-child td { border-bottom: none; }
+.part-row { cursor: pointer; }
+.part-row:hover td { background: #1a2a50; }
+.part-row.selected td { background: #0f3460; }
+</style>
