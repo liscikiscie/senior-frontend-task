@@ -22,6 +22,26 @@ function linkId(link) {
   return `${a}->${b}`
 }
 
+/**
+ * Breadth-first shortest path on an undirected graph.
+ *
+ * Complexity O(V + E):
+ * - buildAdjacency: single pass over edges → O(E).
+ * - BFS loop: each vertex is enqueued at most once because the predecessor map
+ *   blocks re-visits → O(V); each edge is inspected at most twice (once from
+ *   each endpoint) → O(E).
+ * - Path reconstruction: walks the predecessor chain → O(path length) ≤ O(V).
+ *
+ * Uses an index pointer instead of Array.shift() so the dequeue stays O(1)
+ * (shift would degrade BFS to O(V²) on dense graphs).
+ *
+ * @param {Array} links Edge list. source/target may be slug strings or {slug} objects
+ *   (force-graph mutates them into node refs after the first tick).
+ * @param {string} startSlug
+ * @param {string} endSlug
+ * @returns {{ nodeSlugs: Set<string>, linkIds: Set<string> } | null}
+ *   `null` if either endpoint is missing or no path exists.
+ */
 export function findShortestPath(links, startSlug, endSlug) {
   if (!startSlug || !endSlug) return null
 
