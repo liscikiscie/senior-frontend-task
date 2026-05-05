@@ -65,6 +65,10 @@ const { t } = useI18n()
 
 const outLinks    = computed(() => props.chunk.links.filter(l => l.direction === 'out'))
 const inLinks     = computed(() => props.chunk.links.filter(l => l.direction === 'in'))
+// `marked` does NOT sanitize HTML — we render its output via v-html. Safe
+// today because body_markdown comes from the static mock dataset (T3, no
+// user input). If this ever consumes server/CMS content, plug in DOMPurify
+// (or marked's `sanitizer` hook) before mounting it back onto the DOM.
 const parsedBody  = computed(() => marked.parse(props.chunk.body_markdown || ''))
 </script>
 
