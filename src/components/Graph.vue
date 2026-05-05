@@ -136,16 +136,21 @@ watch(() => props.data,         function syncGraphData(next) { getInstance()?.gr
 watch(() => props.selectedSlug, camera.focusSlug)
 // force-graph 1.x doesn't expose a public `refresh()` method, and after the
 // physics engine cools down the canvas only repaints on user interaction
-// (zoom, pan, hover). Without an explicit nudge, typing in the search input
-// updates Vue state but the dim doesn't appear until the user moves the mouse
-// over the canvas. Re-setting the camera at its current position with 0 ms
-// duration is a no-op visually but reliably triggers a re-render.
-watch(() => props.filterQuery,  function refreshAfterFilter() {
+// (zoom, pan, hover). Without an explicit nudge, Vue state changes that
+// affect the per-node dim/highlight (search filter, path-mode state) update
+// the underlying refs but the canvas keeps showing the previous frame.
+// Re-setting the camera at its current position with 0 ms duration is a
+// no-op visually but reliably triggers a re-render.
+function refreshGraphView() {
   const fg = getInstance()
   if (!fg) return
   const center = fg.centerAt() ?? { x: 0, y: 0 }
   fg.centerAt(center.x, center.y, 0)
-})
+}
+
+watch(() => props.filterQuery, refreshGraphView)
+watch(pathActive,              refreshGraphView)
+watch(pathState,               refreshGraphView)
 
 onMounted(function bindKeydown() {
   window.addEventListener('keydown', onWindowKeydown)
