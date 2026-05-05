@@ -58,6 +58,7 @@
           :selected-slug="selectedSlug"
           :filter-query="searchQuery"
           @select="onSelect"
+          @path-mode-change="onPathModeChange"
         />
       </div>
       <div :class="['detail-pane', { open: panelOpen }]">
@@ -123,6 +124,10 @@ const matchCount = computed(function countMatches() {
 
 function onSelect(slug) {
   selectedSlug.value = selectedSlug.value === slug ? null : slug
+}
+
+function onPathModeChange(active) {
+  if (active) selectedSlug.value = null
 }
 
 function clearSearch() {
