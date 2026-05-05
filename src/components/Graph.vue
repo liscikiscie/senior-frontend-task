@@ -16,6 +16,7 @@
 
 <script setup>
 import { watch, ref, computed, onMounted, onUnmounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import GraphToolbar from './GraphToolbar.vue'
 import { linkId } from '../utils/graph.js'
 import { escapeHtml } from '../utils/escape-html.js'
@@ -48,9 +49,12 @@ function isSearchDimmed(node) {
   return matches !== null && !matches.has(node.slug)
 }
 
+const { t } = useI18n()
+
 const {
   active:       pathActive,
-  hint:         pathHint,
+  state:        pathState,
+  pathSize,
   noPathFound:  pathNoPathFound,
   toggle:       togglePath,
   pickNode:     pickPathNode,
@@ -58,6 +62,16 @@ const {
   isLinkOnPath,
   hasResult:    hasPathResult,
 } = usePathMode(getLinks)
+
+const pathHint = computed(function buildPathHint() {
+  switch (pathState.value) {
+    case 'pickStart': return t('graph.selectStart')
+    case 'pickEnd':   return t('graph.selectEnd')
+    case 'found':     return t('graph.stepsCount', pathSize.value, { n: pathSize.value })
+    case 'notFound':  return t('graph.noPath')
+    default:          return ''
+  }
+})
 
 function onPathToggleClick() {
   emit('path-mode-change', togglePath())

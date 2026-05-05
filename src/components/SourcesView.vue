@@ -1,14 +1,20 @@
 <template>
   <div class="app-body">
     <div class="sources-view">
-      <div class="sources-header">{{ sources.length }} source file{{ sources.length !== 1 ? 's' : '' }}</div>
+      <div class="sources-header">
+        {{ t('sourcesView.fileCount', sources.length, { n: sources.length }) }}
+      </div>
       <div class="sources-list">
         <div v-for="s in sources" :key="s.source_name" class="source-card">
-          <button class="source-card-header" @click="toggle(s.source_name)">
+          <button
+            class="source-card-header"
+            :aria-label="t('sourcesView.toggleDetails')"
+            @click="toggle(s.source_name)"
+          >
             <div class="source-card-title">
               <span class="source-card-name">{{ s.source_name }}</span>
               <span class="source-card-meta">
-                {{ s.source_part_count }} part{{ s.source_part_count !== 1 ? 's' : '' }}
+                {{ t('sourcesView.partsCount', s.source_part_count, { n: s.source_part_count }) }}
                 <template v-if="s.processor"> · {{ s.processor }} {{ s.processor_version }}</template>
                 · {{ fmtDate(s.processed_at) }}
               </span>
@@ -19,11 +25,11 @@
           <div v-if="expanded[s.source_name]" class="source-card-body">
             <div class="source-meta-grid">
               <template v-if="s.source_path">
-                <span class="meta-label">Path</span>
+                <span class="meta-label">{{ t('sourcesView.meta.path') }}</span>
                 <span class="meta-value">{{ s.source_path }}</span>
               </template>
               <template v-if="s.source_sha256">
-                <span class="meta-label">SHA-256</span>
+                <span class="meta-label">{{ t('sourcesView.meta.sha256') }}</span>
                 <span class="meta-value mono">{{ s.source_sha256 }}</span>
               </template>
             </div>
@@ -31,7 +37,12 @@
             <table v-if="s.parts.length" class="parts-table">
               <thead>
                 <tr>
-                  <th>#</th><th>Title</th><th>Start</th><th>End</th><th>Duration</th><th>Lang</th>
+                  <th>{{ t('sourcesView.columns.index') }}</th>
+                  <th>{{ t('sourcesView.columns.title') }}</th>
+                  <th>{{ t('sourcesView.columns.start') }}</th>
+                  <th>{{ t('sourcesView.columns.end') }}</th>
+                  <th>{{ t('sourcesView.columns.duration') }}</th>
+                  <th>{{ t('sourcesView.columns.lang') }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -56,7 +67,7 @@
     </div>
 
     <div :class="['detail-pane', { open: !!selectedPart }]">
-      <div v-if="partLoading" class="panel-loading">Loading…</div>
+      <div v-if="partLoading" class="panel-loading">{{ t('app.loading') }}</div>
       <PartPanel
         v-else-if="partData"
         :part="partData"
@@ -67,20 +78,34 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
-import { sources, getPart } from '../data/mock.js'
+import { ref, computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { translatedSources, translatedPart } from '../data/translated.js'
 import PartPanel from './PartPanel.vue'
 import { fmtTime } from '../utils/format.js'
 
+const { t, locale } = useI18n()
+
 function fmtDate(iso) {
   if (!iso) return '—'
-  return new Date(iso).toLocaleString()
+  return new Date(iso).toLocaleString(locale.value)
 }
 
-const expanded    = ref({})
+const sources = computed(function buildSources() {
+  void locale.value
+  return translatedSources()
+})
+
+const expanded     = ref({})
 const selectedPart = ref(null)
-const partData    = ref(null)
-const partLoading = ref(false)
+const partLoading  = ref(false)
+const partKeyRef   = ref(null)
+
+const partData = computed(function buildPart() {
+  void locale.value
+  if (!partKeyRef.value) return null
+  return translatedPart(partKeyRef.value.source_name, partKeyRef.value.part_index)
+})
 
 function toggle(name) {
   expanded.value[name] = !expanded.value[name]
@@ -100,10 +125,10 @@ function selectPart(sourceName, partIndex) {
 }
 
 watch(selectedPart, async (sp) => {
-  if (!sp) { partData.value = null; return }
+  if (!sp) { partKeyRef.value = null; return }
   partLoading.value = true
   await new Promise(r => setTimeout(r, 80))
-  partData.value = getPart(sp.source_name, sp.part_index)
+  partKeyRef.value = sp
   partLoading.value = false
 })
 </script>

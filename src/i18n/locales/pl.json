@@ -1,0 +1,171 @@
+{
+  "app": {
+    "tabs": {
+      "graph": "Graf",
+      "sources": "Pliki źródłowe"
+    },
+    "loading": "Ładowanie…",
+    "selectNode": "Wybierz fragment, aby zobaczyć szczegóły",
+    "chunksCount": "brak fragmentów | {n} fragment | {n} fragmenty | {n} fragmentów",
+    "linksCount": "brak powiązań | {n} powiązanie | {n} powiązania | {n} powiązań",
+    "searchPlaceholder": "Szukaj…",
+    "searchAria": "Wyszukaj węzły po tytule",
+    "matchesCount": "brak dopasowań | {n} dopasowanie | {n} dopasowania | {n} dopasowań",
+    "clearSearch": "Wyczyść wyszukiwanie",
+    "language": "Język",
+    "switchToLanguage": "Przełącz język na: {name}",
+    "languageNames": {
+      "en": "angielski",
+      "pl": "polski"
+    }
+  },
+  "chunkPanel": {
+    "relatedChunks": "Powiązane fragmenty",
+    "linksTo": "Odwołania do",
+    "referencedBy": "Odwołania z",
+    "sources": "Źródła",
+    "part": "Sekcja {n}",
+    "close": "Zamknij"
+  },
+  "partPanel": {
+    "sourcePart": "Sekcja źródła",
+    "close": "Zamknij"
+  },
+  "sourcesView": {
+    "fileCount": "brak plików | {n} plik źródłowy | {n} pliki źródłowe | {n} plików źródłowych",
+    "partsCount": "brak sekcji | {n} sekcja | {n} sekcje | {n} sekcji",
+    "toggleDetails": "Pokaż lub ukryj szczegóły źródła",
+    "columns": {
+      "index": "#",
+      "title": "Tytuł",
+      "start": "Początek",
+      "end": "Koniec",
+      "duration": "Czas trwania",
+      "lang": "Język"
+    },
+    "meta": {
+      "path": "Ścieżka",
+      "sha256": "SHA-256"
+    }
+  },
+  "graph": {
+    "pathMode": "Ścieżka",
+    "noPath": "Brak ścieżki",
+    "noMatches": "Brak dopasowań",
+    "selectStart": "Wybierz początek",
+    "selectEnd": "Wybierz koniec",
+    "stepsCount": "0 kroków | {n} krok | {n} kroki | {n} kroków"
+  },
+  "types": {
+    "process_stage": "Etap procesu",
+    "machine_element": "Element maszyny",
+    "machine_part": "Część maszyny",
+    "procedure": "Procedura",
+    "concept": "Pojęcie"
+  },
+  "data": {
+    "nodeTitles": {
+      "brewing-cycle": "Cykl parzenia",
+      "pre-infusion": "Preinfuzja",
+      "extraction": "Ekstrakcja",
+      "cooldown": "Chłodzenie i odpoczynek",
+      "boiler": "Bojler",
+      "pump": "Pompa rotacyjna",
+      "group-head": "Grupa parzenia",
+      "pid-controller": "Regulator PID",
+      "portafilter": "Kolba",
+      "basket": "Sitko",
+      "group-gasket": "Uszczelka grupy",
+      "backflushing": "Płukanie wsteczne",
+      "descaling": "Odkamienianie",
+      "crema": "Krema",
+      "channeling": "Kanałowanie",
+      "extraction-ratio": "Wskaźnik ekstrakcji"
+    },
+    "summaries": {
+      "brewing-cycle": "Pełna sekwencja parzenia od podgrzewania wody po napełnienie filiżanki, trwająca łącznie 25–35 sekund.",
+      "extraction": "Faza trwająca 20–28 sekund, w której gorąca woda pod ciśnieniem jest przetłaczana przez ubitą tabletkę kawy.",
+      "boiler": "Naczynie ciśnieniowe ze stali nierdzewnej, które podgrzewa i przechowuje wodę do parzenia i wytwarzania pary.",
+      "pid-controller": "Cyfrowy sterownik utrzymujący temperaturę bojlera z dokładnością do ±0.3 °C dzięki sprzężeniu zwrotnemu PID.",
+      "backflushing": "Rutynowa procedura polegająca na przepychaniu wody wstecz przez grupę parzenia w celu rozpuszczenia nagromadzonych olejków kawowych.",
+      "descaling": "Procedura rozpuszczania osadów węglanu wapnia z bojlera i wewnętrznych obiegów wody.",
+      "crema": "Czerwonobrązowa emulsja z pęcherzyków CO₂ i olejków kawowych, tworząca się na powierzchni espresso.",
+      "channeling": "Wada polegająca na tym, że woda znajduje drogę o najmniejszym oporze przez tabletkę kawy, powodując nierównomierną ekstrakcję."
+    },
+    "linkLabels": {
+      "accepts": "przyjmuje",
+      "begins_with": "zaczyna się od",
+      "cleans": "czyści",
+      "degrades": "pogarsza",
+      "ends_with": "kończy się na",
+      "feeds": "zasila",
+      "filtered_by": "filtrowane przez",
+      "heats_water_for": "podgrzewa wodę dla",
+      "holds": "trzyma",
+      "passes_through": "przechodzi przez",
+      "preserves": "zachowuje",
+      "pressurises": "wytwarza ciśnienie dla",
+      "produces": "wytwarza",
+      "progresses_to": "przechodzi do",
+      "quantified_by": "mierzone przez",
+      "regulates": "reguluje",
+      "risk_of": "ryzyko",
+      "sealed_by": "uszczelnione przez",
+      "treats": "odkamienia",
+      "uses": "używa"
+    },
+    "partTitles": {
+      "espresso_fundamentals_mp4__1": "Wstęp i cykl parzenia",
+      "espresso_fundamentals_mp4__2": "Woda, ciśnienie i temperatura",
+      "espresso_fundamentals_mp4__3": "Chemia ekstrakcji",
+      "espresso_fundamentals_mp4__4": "Przegląd konserwacji",
+      "machine_maintenance_guide_pdf__1": "Protokół codziennego czyszczenia",
+      "machine_maintenance_guide_pdf__2": "Konserwacja cotygodniowa",
+      "machine_maintenance_guide_pdf__3": "Odkamienianie i rozwiązywanie problemów",
+      "group_head_teardown_mp4__1": "Demontaż i wymiana uszczelki",
+      "group_head_teardown_mp4__2": "Prysznic grupy i montaż"
+    },
+    "sourceNotes": {
+      "brewing-cycle__0": "Przegląd cyklu i tabela parametrów",
+      "brewing-cycle__1": "Szczegółowa analiza czasu",
+      "extraction__0": "Chemia ekstrakcji i okno uzysku",
+      "extraction__1": "Rozwiązywanie problemów z nierównomierną ekstrakcją",
+      "boiler__0": "Porównanie architektury bojlerów",
+      "boiler__1": "Procedury usuwania kamienia",
+      "pid-controller__0": "Systemy kontroli temperatury",
+      "backflushing__0": "Protokół codziennego czyszczenia",
+      "descaling__0": "Procedury usuwania kamienia",
+      "crema__0": "Chemia kremy",
+      "channeling__0": "Przyczyny i zapobieganie kanałowaniu"
+    },
+    "bodyMarkdown": {
+      "brewing-cycle": "## Przegląd\n\nCykl parzenia obejmuje każdy krok wykonywany przez ekspres od momentu, gdy użytkownik\nuruchomi shota, aż do ostatecznego spływu espresso do filiżanki.\n\n### Typowy czas\n\n| Faza | Czas trwania |\n|---|---|\n| Preinfuzja | 3–8 s |\n| Ekstrakcja | 20–28 s |\n| Chłodzenie | pasywne |\n\n### Kluczowe parametry\n\n- **Temperatura wody**: 90–96 °C w grupie parzenia\n- **Ciśnienie parzenia**: 9 bar (±0.5 bar)\n- **Proporcja uzysku**: 1 : 2 (sucha kawa : płynne espresso)\n\n> Małe odchylenia w jakimkolwiek parametrze propagują się nieliniowo — spadek\n> temperatury parzenia o 1 °C może przesunąć uzysk z ekstrakcji o 2–3 %.",
+      "pre-infusion": "## Preinfuzja\n\nBrak jeszcze szczegółowych treści dla tego węzła.",
+      "extraction": "## Ekstrakcja\n\nGorąca woda pod ciśnieniem 9 bar jest tłoczona przez ubitą tabletkę kawy wewnątrz\n**sitka filtra**. Rozpuszczalne związki rozpuszczają się po kolei:\n\n1. Kwasy i estry owocowe (wczesna ekstrakcja)\n2. Cukry i karmele (środkowa ekstrakcja)\n3. Gorzkie fenole i garbniki (późna ekstrakcja)\n\n### Okno uzysku\n\nIdealny **wskaźnik ekstrakcji** wynosi między 18 % a 22 % wagi suchej kawy\nrozpuszczonej w płynie. Wynik poniżej tworzy kwaśne, wodniste espresso;\nwynik powyżej tworzy cierpką gorycz.\n\n### Ryzyko kanałowania\n\nJeśli tabletka kawy ma nierównomierną gęstość — z powodu słabej dystrybucji lub ubicia — woda\nznajduje drogę najmniejszego oporu i przebija kanał przez tabletkę kawy,\ndramatycznie niedoekstrahowując resztę złoża. Zobacz **Kanałowanie**.",
+      "cooldown": "## Chłodzenie i odpoczynek\n\nBrak jeszcze szczegółowych treści dla tego węzła.",
+      "boiler": "## Bojler\n\nEkspresy typu prosumer zazwyczaj wykorzystują jedną z trzech architektur bojlerów:\n\n| Typ | Opis |\n|---|---|\n| Pojedynczy bojler | Jeden bojler przełącza się między temperaturami parzenia i pary |\n| Wymiennik ciepła | Bojler pary z pętlą wody do parzenia wewnątrz |\n| Podwójny bojler | Oddzielne bojlery parzenia i pary — niezależne sterowanie |\n\n### Stabilność temperatury\n\nRegulator PID próbkuje termoparę bojlera co 200 ms i dostosowuje\ncykl pracy grzałki, aby utrzymać temperaturę parzenia na poziomie ±0.3 °C. Masa\ntermiczna grupy parzenia oznacza, że temperatura wody na tabletce kawy jest zazwyczaj\no 1–2 °C niższa niż wartość zadana bojlera.\n\n### Konserwacja\n\nOdkładanie się kamienia na grzałce zwiększa opór cieplny, podnosząc\nzużycie energii i zmniejszając stabilność temperatury. **Odkamienianie** przy użyciu\nłagodnego roztworu kwasu cytrynowego usuwa osady węglanu wapnia.",
+      "pump": "## Pompa rotacyjna\n\nBrak jeszcze szczegółowych treści dla tego węzła.",
+      "group-head": "## Grupa parzenia\n\nBrak jeszcze szczegółowych treści dla tego węzła.",
+      "pid-controller": "## Regulator PID\n\nRegulator **Proporcjonalno-Całkująco-Różniczkujący** próbkuje termoparę\nbojlera i dostosowuje cykl pracy grzałki, aby zminimalizować błąd temperatury.\n\n### Parametry strojenia\n\n| Człon | Efekt po zwiększeniu |\n|---|---|\n| P (proporcjonalny) | Szybsza reakcja, większe oscylacje |\n| I (całkujący) | Eliminuje uchyb ustalony, wolniejsza reakcja |\n| D (różniczkujący) | Tłumi oscylacje, wrażliwy na szumy |\n\nFabryczne wartości domyślne są skalibrowane dla masy termicznej konkretnego\nbojlera. Ponowne strojenie jest rzadko potrzebne, chyba że bojler lub termopara zostaną\nwymienione.",
+      "portafilter": "## Kolba\n\nBrak jeszcze szczegółowych treści dla tego węzła.",
+      "basket": "## Sitko filtra\n\nBrak jeszcze szczegółowych treści dla tego węzła.",
+      "group-gasket": "## Uszczelka grupy\n\nBrak jeszcze szczegółowych treści dla tego węzła.",
+      "backflushing": "## Backflush\n\nBackflush wykonuje się poprzez umieszczenie **sitka ślepego** (bez otworów) w kolbie. Kiedy pompa pracuje, ciśnienie wzrasta, aż otworzy się OPV (zawór nadciśnieniowy) i wymusi przepływ wody wstecz przez sitko prysznicowe i zawór elektromagnetyczny, usuwając oleje kawowe i osady.\n\n### Harmonogram\n\n| Rodzaj ekspresu | Częstotliwość |\n|---|---|\n| Domowy (1–2 shotów dziennie) | Raz w tygodniu |\n| Biuro (10–20 shotów dziennie) | Codziennie |\n| Kawiarnia (100+ shotów dziennie) | Co 2–3 godziny |\n\n### Z detergentem\n\nRaz w tygodniu dodaj jedną tabletkę lub 1 g **Puly Caff** lub odpowiedniego detergentu do ekspresów do sitka ślepego. Wykonaj 5 cykli × 10 sekund, a następnie 5 cykli płukania bez detergentu.\n\n> Nigdy nie używaj detergentu do backflusha częściej niż raz w tygodniu — może on uszkodzić gumowe uszczelki, w tym uszczelkę grupy.",
+      "descaling": "## Odkamienianie\n\nTwarda woda pozostawia kamień (osad węglanu wapnia) na każdej powierzchni mającej kontakt z podgrzaną wodą. Grzałka bojlera jest najbardziej narażonym elementem.\n\n### Środek odkamieniający\n\nUżyj dedykowanego odkamieniacza do ekspresów lub **roztworu kwasu cytrynowego** (1 g na 100 mL wody). Nigdy nie używaj octu — kwas octowy niszczy mosiężne złączki.\n\n### Procedura (ogólna)\n\n1. Napełnij zbiornik wody roztworem odkamieniającym\n2. Przepuść połowę objętości przez maszynę\n3. Zatrzymaj na 15 minut (namaczanie)\n4. Przepuść pozostałą część\n5. Wykonaj płukanie trzema pełnymi zbiornikami świeżej wody\n\n### Częstotliwość\n\nZależy od twardości wody. Przy 300 ppm TDS (twarda woda) odkamieniaj co 4–6 tygodni; przy 100 ppm (miękka woda) co 3–4 miesiące.",
+      "crema": "## Krema\n\nKrema to **piana koloidalna** stabilizowana przez oleje kawowe o właściwościach surfaktantów. Powstaje, ponieważ CO₂ — uwięzione w ziarnach podczas palenia — uwalnia się z roztworu pod wpływem spadku ciśnienia, gdy espresso wypływa z sitka.\n\n### Krema jako wskaźnik świeżości\n\nKawa odgazowuje się po wypaleniu w ciągu 2–4 tygodni. Bardzo świeża kawa (< 5 dni po wypaleniu) daje gęstą, gorzką kremę; kawa wypalona > 3 tygodnie temu daje mało kremy, niezależnie od techniki.\n\n### Częste nieporozumienia\n\n- **Ciemne \"tygrysie pasy\"** nie są wskaźnikiem jakości — wynikają ze zróżnicowania wielkości kropli oleju, a nie z jakości ekstrakcji.\n- Sama grubość kremy nie świadczy o dobrym shocie; poprawnie wyekstrahowany shot ze starszej kawy może mieć cienką, ale smaczną kremę.",
+      "channeling": "## Kanałowanie\n\nKanałowanie występuje, gdy tabletka kawy ma **gradient gęstości** — pęknięcie, pustą przestrzeń lub nierównomierne ubicie — co woda preferencyjnie wykorzystuje.\n\n### Oznaki wizualne\n\n- Blady, wodnisty strumień na początku shota\n- Nierównomierny kolor zużytej tabletki kawy po ekstrakcji\n- Drastyczne odchylenie rzeczywistego vs docelowego współczynnika ekstrakcji\n\n### Przyczyny źródłowe\n\n1. Nierównomierna dystrybucja przed ubijaniem\n2. Tamper nie jest wypoziomowany (nachylenie >2° tworzy rampę ciśnienia)\n3. Awaria uszczelki grupy pozwalająca wodzie omijać krawędź tabletki kawy\n4. Zwietrzała kawa z nadmierną migracją drobnych cząstek\n\n### Zapobieganie\n\nPrzed ubijaniem użyj narzędzia WDT do dystrybucji oraz kalibrowanego tampera z płaską podstawą. Co 3 miesiące sprawdzaj uszczelkę grupy.",
+      "extraction-ratio": "## Wskaźnik ekstrakcji\n\nBrak jeszcze szczegółowych treści dla tego węzła."
+    },
+    "partBodies": {
+      "espresso_fundamentals_mp4__1": "## Wprowadzenie i cykl parzenia\n\nTa sekcja wprowadza podstawowe pojęcia ekstrakcji espresso i omawia pełny cykl parzenia od zimnego startu do filiżanki.\n\n### Czym jest espresso?\n\nEspresso powstaje przez tłoczenie wody pod wysokim ciśnieniem (9 bar) przez drobno zmieloną, ubitą kawę. Krótki czas kontaktu (25–35 s) i wysokie ciśnienie dają skoncentrowany napój o intensywnym smaku, zwieńczony cremą.\n\n### Trzy fazy\n\n1. **Preinfuzja** — niskociśnieniowe namaczanie tabletki kawy w celu wyrównania gęstości\n2. **Ekstrakcja** — ekstrakcja związków rozpuszczalnych pod pełnym ciśnieniem\n3. **Chłodzenie** — pasywny spadek temperatury podczas recyrkulacji wody",
+      "espresso_fundamentals_mp4__2": "## Woda, ciśnienie i temperatura\n\n### Rola temperatury\n\nTemperatura wody w grupie parzenia — a nie w bojlerze — określa chemię ekstrakcji. Docelowy zakres to **90–96 °C**, przy czym ciemniejsze wypalenia preferują dolną granicę, aby uniknąć potęgowania goryczy.\n\n### Profilowanie ciśnienia\n\nNowoczesne ekspresy pozwalają na dynamiczne ciśnienie podczas shota:\n- Zacznij od 3–4 bar podczas preinfuzji\n- Wzrost do 9 bar na czas ekstrakcji\n- Opcjonalny spadek ciśnienia do 6 bar w ostatniej tercji, aby zredukować gorycz\n\n### Kontrola temperatury PID\n\nSterownik PID sprawdza termoparę bojlera co 200 ms. Precyzyjna kontrola temperatury poprawia powtarzalność shot-to-shot nawet o 40 % w porównaniu do prostego termostatu dwustanowego.",
+      "espresso_fundamentals_mp4__3": "## Chemia ekstrakcji\n\n### Kolejność rozpuszczania związków\n\nZwiązki rozpuszczalne uwalniają się z kawy w przewidywalnej kolejności:\n\n| Klasa związków | Faza ekstrakcji | Nuta smakowa |\n|---|---|---|\n| Kwasy organiczne | Wczesna (0–8 s) | Jasna, owocowa |\n| Cukry, melanoidy | Środkowa (8–20 s) | Słodka, karmelowa |\n| Fenole, garbniki | Późna (20–28 s) | Gorzka, cierpka |\n\n### Uzysk ekstrakcji\n\nCałkowita ilość rozpuszczonych substancji (TDS) mierzona w filiżance podzielona przez masę suchej kawy. Cel: **18–22 %**. Poniżej 18 % to napój niedoekstrahowany (kwaśny); powyżej 22 % to napój przeekstrahowany (gorzki).\n\n### Kanałowanie\n\nGradient gęstości w tabletce kawy sprawia, że woda tworzy kanały, omijając większość kawy. Wynikowe espresso jest jednocześnie przeekstrahowane (w kanale) i niedoekstrahowane (w pozostałej części) — jednocześnie ostre i kwaśne.",
+      "espresso_fundamentals_mp4__4": "## Przegląd konserwacji\n\nRegularna konserwacja to najważniejszy czynnik wpływający na powtarzalność shot-to-shot.\n\n### Codziennie\n- Przepłucz grupę parzenia przed i po każdej sesji\n- Wytrzyj kolbę i sitko natychmiast po użyciu\n- Opróżnij i wypłucz tackę ociekową\n\n### Co tydzień\n- Backflush ślepym sitkiem (sama woda × 5)\n- Backflush z użyciem detergentu × 5, następnie płukanie × 5\n- Sprawdź uszczelkę grupy pod kątem pęknięć lub odkształceń\n\n### Co miesiąc\n- Wyczyść wylewki kolby igłą lub cienką szczoteczką\n- Sprawdź ciśnienie pompy za pomocą manometru do kolby\n- Sprawdź zbiornik wody pod kątem osadów lub filmu mineralnego",
+      "machine_maintenance_guide_pdf__1": "## Protokół codziennego czyszczenia\n\n### Przed pierwszym użyciem\n1. Przepłucz 100 mL przez grupę parzenia bez kolby, aby usunąć\n   zastałą wodę z nocy.\n2. Uruchom dyszę pary na 3 s, aby usunąć skropliny.\n\n### Po każdym shocie\n1. Natychmiast wyjmij kolbę — pozostawiona kawa niszczy uszczelkę.\n2. Wyrzuć zużytą tabletkę kawy; wypłucz sitko pod gorącą wodą.\n3. Przetrzyj sitko prysznicowe wilgotną szmatką.\n\n### Na koniec dnia\n1. Wykonaj backflush czystą wodą (5 × 10 s cykli).\n2. Opróżnij i wypłucz tackę ociekową oraz pojemnik na fusy.\n3. Przetrzyj obudowę wilgotną ścierką z mikrofibry.\n4. Pozostaw dźwignię lub przycisk grupy parzenia w pozycji wyłączonej.",
+      "machine_maintenance_guide_pdf__2": "## Konserwacja cotygodniowa\n\n### Backflush z detergentem\n1. Włóż sitko ślepe do kolby.\n2. Dodaj 1 g Puly Caff (lub odpowiednika).\n3. Wykonaj 5 × 10 s cykli z 5 s przerwą pomiędzy.\n4. Usuń detergent; wykonaj 5 cykli płukania czystą wodą.\n5. Wyjmij kolbę, dokładnie wypłucz sitko.\n\n### Inspekcja sitka\nSprawdź sitko pod kątem:\n- Zablokowanych otworów (użyj igły w razie potrzeby)\n- Odkształcenia krawędzi (wymień, jeśli nie przylega równo)\n- Wżery lub korozja na powierzchni wewnętrznej\n\n### Kontrola zmiękczacza wody (jeśli zamontowano)\nZregeneruj żywicę jonowymienną zgodnie z harmonogramem producenta.",
+      "machine_maintenance_guide_pdf__3": "## Odkamienianie i rozwiązywanie problemów\n\n### Odkamienianie krok po kroku\n1. Przygotuj roztwór do odkamieniania: 8 g kwasu cytrynowego na litr wody.\n2. Napełnij zbiornik; przepuść połowę objętości przy niskim przepływie.\n3. Odczekaj 15 minut — kwas rozpuszcza osady węglanowe.\n4. Wznów pracę; przepuść resztę roztworu.\n5. Przepłucz trzema pełnymi zbiornikami świeżej wody.\n6. Zmierz TDS wody po płukaniu — powinien odpowiadać TDS wody wejściowej.\n\n### Typowe usterki\n\n| Objaw | Prawdopodobna przyczyna | Rozwiązanie |\n|---|---|---|\n| Wolny przepływ / wysokie ciśnienie | Zablokowane sitko lub zbyt drobne mielenie | Wyczyść sitko; wyreguluj młynek |\n| Brak kremy | Stara kawa lub zbyt chłodna woda | Świeże ziarna; sprawdź nastawę temperatury |\n| Wyciek wokół kolby | Zużyta uszczelka grupy | Wymień uszczelkę |\n| Niskie ciśnienie pary | Kamień na grzałce bojlera | Wykonaj odkamienianie |",
+      "group_head_teardown_mp4__1": "## Demontaż & wymiana uszczelki\n\n### Wymagane narzędzia\n- Śrubokręt płaski (duży, do śruby sitka prysznicowego)\n- Klucz nasadowy lub płaski 14 mm (do nakrętki grupy w niektórych modelach)\n- Narzędzie do uszczelek grupy lub kołek drewniany\n\n### Procedura\n1. Zdejmij kolbę.\n2. Odkręć sitko prysznicowe (zazwyczaj jedna centralna śruba).\n3. Wyciągnij sitko prysznicowe i płytkę rozpraszającą.\n4. Uszczelka grupy jest teraz widoczna jako gumowy pierścień we wgłębieniu grupy parzenia.\n5. Użyj haka do uszczelek lub płaskiego śrubokręta, aby ją podważyć.\n6. Wyczyść wgłębienie szczotką i środkiem do czyszczenia grupy parzenia.\n7. Wciśnij mocno nową uszczelkę do wgłębienia — powinna przylegać równo.\n\n> Uszczelki są **zależne od modelu**. Przed zamówieniem sprawdź średnicę wewnętrzną, średnicę\n> zewnętrzną oraz grubość.",
+      "group_head_teardown_mp4__2": "## Sitko prysznicowe & ponowny montaż\n\n### Inspekcja sitka prysznicowego\n- Podnieś sitko pod światło — wszystkie otwory powinny być otwarte i jednolite.\n- Zablokowane lub skorodowane sitko powoduje nierównomierną dystrybucję wody i\n  jest częstą przyczyną kanałowania.\n- Wymień, jeśli ponad 10 % otworów jest zablokowanych lub metal posiada wżery.\n\n### Ponowny montaż\n1. Osadź płytkę rozpraszającą żebrowaną stroną do dołu.\n2. Umieść sitko prysznicowe stroną wierzchnią do płytki rozpraszającej.\n3. Wkręć śrubę ręcznie, aby uniknąć skrzyżowania gwintu.\n4. Dokręć ręcznie plus ¼ obrotu — unikaj przekręcania.\n5. Ponownie załóż kolbę; przepuść 100 mL wody, aby sprawdzić szczelność.\n\n### Test po ponownym montażu\nZaparz shot: obserwuj równomierną, symetryczną ekstrakcję na powierzchni tabletki kawy\npo wyjęciu kolby bezpośrednio po zaparzeniu."
+    }
+  }
+}

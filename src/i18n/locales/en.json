@@ -1,0 +1,171 @@
+{
+  "app": {
+    "tabs": {
+      "graph": "Graph",
+      "sources": "Source Files"
+    },
+    "loading": "Loading…",
+    "selectNode": "Select a chunk to see details",
+    "chunksCount": "no chunks | {n} chunk | {n} chunks",
+    "linksCount": "no links | {n} link | {n} links",
+    "searchPlaceholder": "Search…",
+    "searchAria": "Search nodes by title",
+    "matchesCount": "no matches | {n} match | {n} matches",
+    "clearSearch": "Clear search",
+    "language": "Language",
+    "switchToLanguage": "Switch language to: {name}",
+    "languageNames": {
+      "en": "English",
+      "pl": "Polish"
+    }
+  },
+  "chunkPanel": {
+    "relatedChunks": "Related Chunks",
+    "linksTo": "Links to",
+    "referencedBy": "Referenced by",
+    "sources": "Sources",
+    "part": "Section {n}",
+    "close": "Close"
+  },
+  "partPanel": {
+    "sourcePart": "Source Section",
+    "close": "Close"
+  },
+  "sourcesView": {
+    "fileCount": "no source files | {n} source file | {n} source files",
+    "partsCount": "no sections | {n} section | {n} sections",
+    "toggleDetails": "Toggle source details",
+    "columns": {
+      "index": "#",
+      "title": "Title",
+      "start": "Start",
+      "end": "End",
+      "duration": "Duration",
+      "lang": "Lang"
+    },
+    "meta": {
+      "path": "Path",
+      "sha256": "SHA-256"
+    }
+  },
+  "graph": {
+    "pathMode": "Path",
+    "noPath": "No path found",
+    "noMatches": "No matches",
+    "selectStart": "Pick a start node",
+    "selectEnd": "Pick an end node",
+    "stepsCount": "0 steps | {n} step | {n} steps"
+  },
+  "types": {
+    "process_stage": "Process Stage",
+    "machine_element": "Machine Element",
+    "machine_part": "Machine Part",
+    "procedure": "Procedure",
+    "concept": "Concept"
+  },
+  "data": {
+    "nodeTitles": {
+      "brewing-cycle": "Brewing Cycle",
+      "pre-infusion": "Pre-infusion",
+      "extraction": "Extraction",
+      "cooldown": "Cooldown & Rest",
+      "boiler": "Boiler",
+      "pump": "Rotary Pump",
+      "group-head": "Group Head",
+      "pid-controller": "PID Controller",
+      "portafilter": "Portafilter",
+      "basket": "Filter Basket",
+      "group-gasket": "Group Gasket",
+      "backflushing": "Backflushing",
+      "descaling": "Descaling",
+      "crema": "Crema",
+      "channeling": "Channeling",
+      "extraction-ratio": "Extraction Ratio"
+    },
+    "summaries": {
+      "brewing-cycle": "End-to-end shot sequence from water heating to cup delivery, taking 25–35 seconds total.",
+      "extraction": "The 20–28 second phase where pressurised hot water is forced through the compacted coffee puck.",
+      "boiler": "Stainless-steel pressure vessel that heats and stores water for brewing and steam generation.",
+      "pid-controller": "Digital controller that maintains boiler temperature within ±0.3 °C using PID feedback.",
+      "backflushing": "Routine procedure that forces water back through the group head to dissolve coffee oil build-up.",
+      "descaling": "Procedure to dissolve calcium carbonate deposits from the boiler and internal water paths.",
+      "crema": "The reddish-brown emulsion of CO₂ bubbles and coffee oils that forms on top of espresso.",
+      "channeling": "A defect where water finds a low-resistance path through the puck, causing uneven extraction."
+    },
+    "linkLabels": {
+      "accepts": "accepts",
+      "begins_with": "begins with",
+      "cleans": "cleans",
+      "degrades": "degrades",
+      "ends_with": "ends with",
+      "feeds": "feeds",
+      "filtered_by": "filtered by",
+      "heats_water_for": "heats water for",
+      "holds": "holds",
+      "passes_through": "passes through",
+      "preserves": "preserves",
+      "pressurises": "pressurises",
+      "produces": "produces",
+      "progresses_to": "progresses to",
+      "quantified_by": "quantified by",
+      "regulates": "regulates",
+      "risk_of": "risk of",
+      "sealed_by": "sealed by",
+      "treats": "treats",
+      "uses": "uses"
+    },
+    "partTitles": {
+      "espresso_fundamentals_mp4__1": "Introduction & Brewing Cycle",
+      "espresso_fundamentals_mp4__2": "Water, Pressure & Temperature",
+      "espresso_fundamentals_mp4__3": "Extraction Chemistry",
+      "espresso_fundamentals_mp4__4": "Maintenance Overview",
+      "machine_maintenance_guide_pdf__1": "Daily Cleaning Protocol",
+      "machine_maintenance_guide_pdf__2": "Weekly Maintenance",
+      "machine_maintenance_guide_pdf__3": "Descaling & Troubleshooting",
+      "group_head_teardown_mp4__1": "Disassembly & Gasket Replacement",
+      "group_head_teardown_mp4__2": "Shower Screen & Reassembly"
+    },
+    "sourceNotes": {
+      "brewing-cycle__0": "Cycle overview and parameter table",
+      "brewing-cycle__1": "Timing deep-dive",
+      "extraction__0": "Extraction chemistry and yield window",
+      "extraction__1": "Troubleshooting uneven extraction",
+      "boiler__0": "Boiler architecture comparison",
+      "boiler__1": "Scale removal procedures",
+      "pid-controller__0": "Temperature control systems",
+      "backflushing__0": "Daily cleaning protocol",
+      "descaling__0": "Scale removal procedures",
+      "crema__0": "Crema chemistry",
+      "channeling__0": "Channeling causes and prevention"
+    },
+    "bodyMarkdown": {
+      "brewing-cycle": "## Overview\n\nThe brewing cycle covers every step the machine performs from the moment the user\ntriggers a shot to the final delivery of espresso into the cup.\n\n### Typical timing\n\n| Phase | Duration |\n|---|---|\n| Pre-infusion | 3–8 s |\n| Extraction | 20–28 s |\n| Cooldown | passive |\n\n### Key parameters\n\n- **Water temperature**: 90–96 °C at the group head\n- **Brew pressure**: 9 bar (±0.5 bar)\n- **Yield ratio**: 1 : 2 (dry coffee in : liquid espresso out)\n\n> Small deviations in any parameter propagate non-linearly — a 1 °C\n> drop in brew temperature can shift extraction yield by 2–3 %.",
+      "pre-infusion": "## Pre-infusion\n\nNo detailed content available for this node yet.",
+      "extraction": "## Extraction\n\nHot water at 9 bar is forced through the compacted coffee puck inside the\n**filter basket**. Soluble compounds dissolve in sequence:\n\n1. Acids and fruity esters (early extraction)\n2. Sugars and caramels (mid extraction)\n3. Bitter phenols and tannins (late extraction)\n\n### Yield window\n\nThe ideal **extraction ratio** sits between 18 % and 22 % of the dry coffee\nweight dissolved into the liquid. Going under produces sour, thin espresso;\ngoing over produces harsh bitterness.\n\n### Channeling risk\n\nIf the puck has uneven density — from poor distribution or tamping — water\nfinds the path of least resistance and punches a channel through the puck,\ndramatically under-extracting the rest of the bed. See **Channeling**.",
+      "cooldown": "## Cooldown & Rest\n\nNo detailed content available for this node yet.",
+      "boiler": "## Boiler\n\nProsumer machines typically use one of three boiler architectures:\n\n| Type | Description |\n|---|---|\n| Single boiler | One boiler switches between brew and steam temps |\n| Heat exchanger | Steam boiler with a brew-water loop inside |\n| Dual boiler | Separate brew and steam boilers — independent control |\n\n### Temperature stability\n\nThe PID controller samples the boiler's thermocouple every 200 ms and adjusts\nthe heating element duty cycle to hold brew temperature to ±0.3 °C. Thermal\nmass of the group head means the water temperature at the puck is typically\n1–2 °C lower than the boiler set point.\n\n### Maintenance\n\nScale build-up on the heating element increases thermal resistance, raising\nenergy consumption and reducing temperature stability. **Descaling** with a\nmild citric acid solution removes calcium carbonate deposits.",
+      "pump": "## Rotary Pump\n\nNo detailed content available for this node yet.",
+      "group-head": "## Group Head\n\nNo detailed content available for this node yet.",
+      "pid-controller": "## PID Controller\n\nA **Proportional-Integral-Derivative** controller samples the boiler\nthermocouple and adjusts element duty cycle to minimise temperature error.\n\n### Tuning parameters\n\n| Term | Effect when increased |\n|---|---|\n| P (proportional) | Faster response, more oscillation |\n| I (integral) | Eliminates steady-state error, slower |\n| D (derivative) | Dampens oscillation, noise-sensitive |\n\nFactory default values are calibrated for the thermal mass of the specific\nboiler. Re-tuning is rarely needed unless the boiler or thermocouple is\nreplaced.",
+      "portafilter": "## Portafilter\n\nNo detailed content available for this node yet.",
+      "basket": "## Filter Basket\n\nNo detailed content available for this node yet.",
+      "group-gasket": "## Group Gasket\n\nNo detailed content available for this node yet.",
+      "backflushing": "## Backflushing\n\nBackflushing is performed by inserting a **blind basket** (no holes) into the\nportafilter. When the pump runs, pressure builds until the OPV (over-pressure\nvalve) opens and forces water backward through the shower screen and solenoid\nvalve, dislodging coffee oils and residue.\n\n### Schedule\n\n| Machine type | Frequency |\n|---|---|\n| Home (1–2 shots/day) | Weekly |\n| Office (10–20 shots/day) | Daily |\n| Café (100+ shots/day) | Every 2–3 hours |\n\n### With detergent\n\nOnce per week, add one tablet or 1 g of **Puly Caff** or equivalent espresso\nmachine detergent to the blind basket. Run 5 cycles × 10 seconds, then 5\nrinse cycles without detergent.\n\n> Never use backflushing detergent more frequently than weekly — it can\n> degrade rubber seals including the group gasket.",
+      "descaling": "## Descaling\n\nHard water deposits calcium carbonate (limescale) on any surface in contact\nwith heated water. The boiler heating element is the most affected component.\n\n### Descaling agent\n\nUse a purpose-made machine descaler or a **citric acid solution** (1 g per\n100 mL water). Never use vinegar — acetic acid attacks brass fittings.\n\n### Procedure (generic)\n\n1. Fill reservoir with descaling solution\n2. Run half the volume through the machine\n3. Pause for 15 minutes (soak)\n4. Run remainder through\n5. Rinse with three full reservoirs of fresh water\n\n### Frequency\n\nDepends on water hardness. At 300 ppm TDS (hard water) descale every\n4–6 weeks; at 100 ppm (soft water) every 3–4 months.",
+      "crema": "## Crema\n\nCrema is a **colloidal foam** stabilised by surfactant-like coffee oils. It\nforms because CO₂ — dissolved in the bean during roasting — comes out of\nsolution under the pressure drop as espresso exits the basket.\n\n### Crema as a freshness indicator\n\nCO₂ degasses from roasted coffee over 2–4 weeks. Very fresh coffee (< 5 days\npost-roast) produces thick, bitter crema; coffee roasted > 3 weeks ago\nproduces little crema regardless of technique.\n\n### Common misconceptions\n\n- **Dark tiger-striping** is not a quality indicator — it's caused by oil\n  droplet size variation, not extraction quality.\n- Crema thickness alone does not indicate a good shot; a well-extracted\n  shot with older coffee may have thin but well-flavoured crema.",
+      "channeling": "## Channeling\n\nChanneling occurs when the coffee puck has a **density gradient** — a crack,\nvoid, or area of uneven tamp — that water exploits preferentially.\n\n### Visual signs\n\n- Pale, watery stream early in the shot\n- Uneven colour on spent puck after extraction\n- Drastic deviation of actual vs target extraction ratio\n\n### Root causes\n\n1. Uneven distribution before tamping\n2. Tamper not level (>2° tilt creates a pressure ramp)\n3. Group gasket failure allowing water to bypass the puck edge\n4. Stale coffee with excessive fines migration\n\n### Mitigation\n\nUse a distribution tool (WDT) before tamping, and a calibrated\ntamper with a flat base. Inspect the group gasket every 3 months.",
+      "extraction-ratio": "## Extraction Ratio\n\nNo detailed content available for this node yet."
+    },
+    "partBodies": {
+      "espresso_fundamentals_mp4__1": "## Introduction & Brewing Cycle\n\nThis section introduces the fundamental concepts of espresso extraction and\nwalks through the complete brewing cycle from cold start to cup.\n\n### What is espresso?\n\nEspresso is produced by forcing water at high pressure (9 bar) through finely\nground, compacted coffee. The short contact time (25–35 s) and high pressure\nproduce a concentrated, flavour-dense beverage topped with crema.\n\n### The three phases\n\n1. **Pre-infusion** — low-pressure wetting of the puck to equalise density\n2. **Extraction** — full pressure extraction of soluble compounds\n3. **Cooldown** — passive temperature drop as water recirculates",
+      "espresso_fundamentals_mp4__2": "## Water, Pressure & Temperature\n\n### The role of temperature\n\nWater temperature at the group head — not at the boiler — determines\nextraction chemistry. Target range is **90–96 °C**, with darker roasts\npreferring the lower end to avoid exacerbating bitterness.\n\n### Pressure profiling\n\nModern machines allow dynamic pressure control across the shot:\n- Start at 3–4 bar during pre-infusion\n- Ramp to 9 bar for extraction\n- Optional pressure drop to 6 bar in the final third to reduce bitterness\n\n### PID temperature control\n\nThe PID controller samples the boiler thermocouple every 200 ms. Accurate\ntemperature control reduces shot-to-shot variance by up to 40 % compared\nto a simple on/off thermostat.",
+      "espresso_fundamentals_mp4__3": "## Extraction Chemistry\n\n### Compound dissolution sequence\n\nSoluble compounds leave the coffee bed in a predictable order:\n\n| Compound class | Extraction phase | Flavour note |\n|---|---|---|\n| Organic acids | Early (0–8 s) | Bright, fruity |\n| Sugars, melanoidins | Mid (8–20 s) | Sweet, caramel |\n| Phenols, tannins | Late (20–28 s) | Bitter, dry |\n\n### Extraction yield\n\nTotal dissolved solids (TDS) measured in the cup divided by dry coffee weight.\nTarget: **18–22 %**. Below 18 % is under-extracted (sour); above 22 % is\nover-extracted (bitter).\n\n### Channeling\n\nA density gradient in the puck causes water to channel, bypassing most of the\nbed. The resulting espresso is simultaneously over-extracted (the channel) and\nunder-extracted (the rest) — acrid and sour at once.",
+      "espresso_fundamentals_mp4__4": "## Maintenance Overview\n\nRegular maintenance is the single biggest factor in shot-to-shot consistency.\n\n### Daily\n- Purge group head before and after each session\n- Wipe portafilter and basket immediately after use\n- Empty and rinse drip tray\n\n### Weekly\n- Backflush with blind basket (water only × 5)\n- Backflush with detergent × 5, then rinse × 5\n- Inspect group gasket for cracks or deformation\n\n### Monthly\n- Clean portafilter spouts with a pin or fine brush\n- Check pump pressure with a portafilter gauge\n- Inspect water reservoir for algae or mineral film",
+      "machine_maintenance_guide_pdf__1": "## Daily Cleaning Protocol\n\n### Before first use\n1. Flush 100 mL through the group head without a portafilter to purge any\n   stale water from overnight.\n2. Run the steam wand for 3 seconds to clear condensate.\n\n### After each shot\n1. Remove portafilter immediately — coffee deteriorates the gasket if left.\n2. Knock out spent puck; rinse basket under hot water.\n3. Wipe shower screen with a damp cloth.\n\n### End of day\n1. Backflush with plain water (5 × 10 s cycles).\n2. Empty and rinse drip tray and grinds drawer.\n3. Wipe exterior with a damp microfibre cloth.\n4. Leave group head lever or button in the off position.",
+      "machine_maintenance_guide_pdf__2": "## Weekly Maintenance\n\n### Backflush with detergent\n1. Insert blind basket into portafilter.\n2. Add 1 g Puly Caff (or equivalent).\n3. Run 5 × 10 s cycles with 5 s rest between.\n4. Remove detergent; run 5 plain-water rinse cycles.\n5. Remove portafilter, rinse basket thoroughly.\n\n### Basket inspection\nCheck the basket for:\n- Blocked holes (use a pin if blocked)\n- Deformation of the rim (replace if not seating flush)\n- Pitting or corrosion on the inner surface\n\n### Water softener check (if fitted)\nRegenerate the ion-exchange resin per manufacturer schedule.",
+      "machine_maintenance_guide_pdf__3": "## Descaling & Troubleshooting\n\n### Descaling step-by-step\n1. Mix descaling solution: 8 g citric acid per litre of water.\n2. Fill reservoir; run half the volume at low flow.\n3. Pause 15 minutes — acid dissolves carbonate deposits.\n4. Resume; run remainder through.\n5. Rinse with three full reservoirs of fresh water.\n6. Test TDS of rinse water — should match input water TDS.\n\n### Common faults\n\n| Symptom | Likely cause | Fix |\n|---|---|---|\n| Slow flow / high pressure | Blocked basket or grind too fine | Clean basket; adjust grinder |\n| No crema | Old coffee or water too cool | Fresh beans; check temp set point |\n| Leaking around portafilter | Worn group gasket | Replace gasket |\n| Steam pressure low | Scale on boiler element | Descale |",
+      "group_head_teardown_mp4__1": "## Disassembly & Gasket Replacement\n\n### Tools required\n- Flathead screwdriver (large, for shower screen screw)\n- 14 mm socket or spanner (for group nut on some models)\n- Group gasket tool or wooden dowel\n\n### Procedure\n1. Remove portafilter.\n2. Unscrew the shower screen (usually a single central screw).\n3. Pull out the shower screen and diffuser plate.\n4. The group gasket is now visible as a rubber ring in the group head recess.\n5. Use a gasket pick or flat screwdriver to lever it out.\n6. Clean recess with a brush and group head cleaner.\n7. Press new gasket firmly into the recess — it should sit flush.\n\n> Gaskets are **model-specific**. Verify the inner diameter, outer\n> diameter, and thickness before ordering.",
+      "group_head_teardown_mp4__2": "## Shower Screen & Reassembly\n\n### Shower screen inspection\n- Hold the screen up to light — all holes should be open and uniform.\n- A blocked or corroded screen causes uneven water distribution and\n  is a common cause of channeling.\n- Replace if more than 10 % of holes are blocked or the metal is pitted.\n\n### Reassembly\n1. Seat the diffuser plate with the ribbed face down.\n2. Place the shower screen face-up against the diffuser.\n3. Thread the screw by hand to avoid cross-threading.\n4. Tighten finger-tight plus ¼ turn — do not over-torque.\n5. Reinsert portafilter; run 100 mL to check for leaks.\n\n### Post-reassembly test\nPull a shot: watch for even, symmetrical extraction across the puck\nsurface after removing the portafilter immediately after the shot."
+    }
+  }
+}

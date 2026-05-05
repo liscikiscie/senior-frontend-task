@@ -1,25 +1,34 @@
 import { ref, computed, readonly, toValue } from 'vue'
 import { findShortestPath } from '../utils/graph.js'
 
+/**
+ * Path-mode state machine for the shortest-path overlay.
+ *
+ * Exposes structured state instead of a pre-formatted hint string so the
+ * consuming component can render translated copy through vue-i18n.
+ *
+ * `state` is one of:
+ *   - 'pickStart'  — no start node chosen yet
+ *   - 'pickEnd'    — start chosen, waiting for the second click
+ *   - 'found'      — both endpoints set, BFS returned a path
+ *   - 'notFound'   — both endpoints set, no path between them
+ */
 export function usePathMode(linksSource) {
   const active = ref(false)
   const start  = ref(null)
   const end    = ref(null)
   const result = ref(null)
 
-  function getNoPathFound() {
-    return active.value && start.value && end.value && result.value === null
+  function getState() {
+    if (!start.value) return 'pickStart'
+    if (!end.value)   return 'pickEnd'
+    if (result.value) return 'found'
+    return 'notFound'
   }
 
-  function getHint() {
-    if (!start.value) return 'Click a node to set START'
-    if (!end.value)   return 'Click another node to set END'
-    if (result.value) return `Path: ${result.value.nodeSlugs.size} nodes`
-    return 'No path found — click again to retry'
-  }
-
-  const noPathFound = computed(getNoPathFound)
-  const hint        = computed(getHint)
+  const state       = computed(getState)
+  const pathSize    = computed(() => result.value?.nodeSlugs.size ?? 0)
+  const noPathFound = computed(() => active.value && state.value === 'notFound')
 
   function reset() {
     start.value  = null
@@ -59,8 +68,9 @@ export function usePathMode(linksSource) {
 
   return {
     active: readonly(active),
+    state,
+    pathSize,
     noPathFound,
-    hint,
     toggle,
     pickNode,
     isNodeOnPath,

@@ -1,36 +1,52 @@
 <template>
   <div class="app">
     <header class="app-header">
-      <h1>Wiki Knowledge Graph</h1>
+      <h1>{{ t('app.title') }}</h1>
       <nav class="tabs">
-        <button :class="['tab', { active: tab === 'graph' }]" @click="tab = 'graph'">Graph</button>
-        <button :class="['tab', { active: tab === 'sources' }]" @click="tab = 'sources'">Source Files</button>
+        <button :class="['tab', { active: tab === 'graph' }]" @click="tab = 'graph'">{{ t('app.tabs.graph') }}</button>
+        <button :class="['tab', { active: tab === 'sources' }]" @click="tab = 'sources'">{{ t('app.tabs.sources') }}</button>
       </nav>
 
       <span v-if="tab === 'graph'" class="status">
-        {{ graphData.nodes.length }} chunks · {{ graphData.links.length }} links
+        {{ t('app.chunksCount', graphData.nodes.length, { n: graphData.nodes.length }) }} ·
+        {{ t('app.linksCount',  graphData.links.length, { n: graphData.links.length }) }}
       </span>
-       <div v-if="tab === 'graph'" class="search">
+
+      <div v-if="tab === 'graph'" class="search">
         <input
           ref="searchInputEl"
           v-model="searchQuery"
           type="search"
           class="search-input"
-          placeholder="Search nodes…  (press /)"
-          aria-label="Search nodes by title"
+          :placeholder="t('app.searchPlaceholder')"
+          :aria-label="t('app.searchAria')"
           @keydown.escape="onSearchEscape"
         />
         <span v-if="searchActive" class="search-count" role="status" aria-live="polite">
-          {{ matchCount }} {{ matchCount === 1 ? 'match' : 'matches' }}
+          {{ t('app.matchesCount', matchCount, { n: matchCount }) }}
         </span>
         <button
           v-if="searchActive"
           type="button"
           class="search-clear"
-          aria-label="Clear search"
+          :aria-label="t('app.clearSearch')"
           @click="clearSearch"
         >
           ×
+        </button>
+      </div>
+
+      <div class="lang-switcher" role="group" :aria-label="t('app.language')">
+        <button
+          v-for="code in SUPPORTED_LOCALES"
+          :key="code"
+          type="button"
+          :class="['lang-btn', { active: locale === code }]"
+          :aria-pressed="locale === code"
+          :title="t('app.switchToLanguage', { name: t(`app.languageNames.${code}`) })"
+          @click="setLocale(code)"
+        >
+          {{ code.toUpperCase() }}
         </button>
       </div>
     </header>
@@ -45,14 +61,14 @@
         />
       </div>
       <div :class="['detail-pane', { open: panelOpen }]">
-        <div v-if="chunkLoading" class="panel-loading">Loading…</div>
+        <div v-if="chunkLoading" class="panel-loading">{{ t('app.loading') }}</div>
         <ChunkPanel
           v-else-if="chunk"
           :chunk="chunk"
           @navigate="selectedSlug = $event"
           @close="selectedSlug = null"
         />
-        <div v-else class="empty-state">Select a node to explore</div>
+        <div v-else class="empty-state">{{ t('app.selectNode') }}</div>
       </div>
     </div>
 
@@ -62,8 +78,10 @@
 
 <script setup>
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
-import { graphData, getChunk } from './data/mock.js'
+import { useI18n } from 'vue-i18n'
+import { translatedGraphData, translatedChunk } from './data/translated.js'
 import { matchedSlugs } from './utils/search.js'
+import { SUPPORTED_LOCALES, setLocale } from './i18n/index.js'
 import Graph from './components/Graph.vue'
 import ChunkPanel from './components/ChunkPanel.vue'
 import SourcesView from './components/SourcesView.vue'
@@ -71,17 +89,30 @@ import SourcesView from './components/SourcesView.vue'
 const PANEL_OPEN_DELAY_MS = 80
 const CHUNK_LOAD_DELAY_MS = 80
 
+const { t, locale } = useI18n()
+
 const tab = ref('graph')
 const selectedSlug = ref(null)
-const chunk = ref(null)
+const chunkSlug = ref(null)
 const chunkLoading = ref(false)
 const panelOpen = ref(false)
 const searchQuery = ref('')
 const searchInputEl = ref(null)
 let panelOpenTimerId = null
 
+const graphData = computed(function buildGraphData() {
+  void locale.value
+  return translatedGraphData()
+})
+
+const chunk = computed(function buildChunk() {
+  void locale.value
+  if (!chunkSlug.value) return null
+  return translatedChunk(chunkSlug.value)
+})
+
 const matched = computed(function computeMatched() {
-  return matchedSlugs(graphData.nodes, searchQuery.value)
+  return matchedSlugs(graphData.value.nodes, searchQuery.value)
 })
 const searchActive = computed(function isSearchActive() {
   return matched.value !== null
@@ -140,13 +171,13 @@ watch(selectedSlug, async function loadChunkForSlug(slug) {
   cancelPanelOpenTimer()
   if (!slug) {
     panelOpen.value = false
-    chunk.value = null
+    chunkSlug.value = null
     return
   }
   if (!panelOpen.value) schedulePanelOpen()
   chunkLoading.value = true
   await delay(CHUNK_LOAD_DELAY_MS)
-  chunk.value = getChunk(slug)
+  chunkSlug.value = slug
   chunkLoading.value = false
 })
 
@@ -251,6 +282,36 @@ onUnmounted(function unbindShortcuts() {
   font-size: 12px;
   color: #666;
   white-space: nowrap;
+}
+
+.lang-switcher {
+  display: flex;
+  gap: 2px;
+}
+
+.lang-btn {
+  background: none;
+  border: 1px solid #2a5080;
+  color: #888;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 3px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.1s, background 0.1s;
+}
+.lang-btn:hover {
+  color: #ccc;
+  background: #1a3a6a;
+}
+.lang-btn.active {
+  background: #0f3460;
+  color: #e8e8e8;
+}
+.lang-btn:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
 }
 
 .graph-pane {

@@ -4,10 +4,9 @@
       type="button"
       :class="['path-toggle', { active: pathActive }]"
       :aria-pressed="pathActive"
-      aria-label="Toggle shortest-path mode"
       @click="$emit('toggle')"
     >
-      {{ pathActive ? '✕ Path' : 'Path' }}
+      {{ pathActive ? `✕ ${t('graph.pathMode')}` : t('graph.pathMode') }}
     </button>
     <span
       v-if="pathActive"
@@ -25,17 +24,21 @@
     role="alert"
     aria-live="assertive"
   >
-    No path found
+    {{ t('graph.noPath') }}
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
 defineProps({
   pathActive:       { type: Boolean, required: true },
   pathHint:         { type: String,  default: '' },
   pathNoPathFound:  { type: Boolean, default: false },
 })
 defineEmits(['toggle'])
+
+const { t } = useI18n()
 </script>
 
 <style scoped>
