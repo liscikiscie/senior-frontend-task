@@ -1,8 +1,3 @@
-<!--
-  Task 1 — Refactoring:
-    • TYPE_LABELS below duplicates the same five keys as TYPE_COLORS in Graph.vue.
-      Unify into src/utils/types.js.
--->
 <template>
   <div class="chunk-panel">
     <div class="panel-header">
@@ -59,15 +54,7 @@
 import { computed } from 'vue'
 import { marked } from 'marked'
 import { formatTimeRange } from '../utils/format.js'
-
-// Task 1: extract to src/utils/types.js (also duplicated as TYPE_COLORS in Graph.vue)
-const TYPE_LABELS = {
-  process_stage:   'Process Stage',
-  machine_element: 'Machine Element',
-  machine_part:    'Machine Part',
-  procedure:       'Procedure',
-  concept:         'Concept',
-}
+import { TYPE_LABELS } from '../utils/types.js'
 
 const props = defineProps({
   chunk: { type: Object, required: true },
