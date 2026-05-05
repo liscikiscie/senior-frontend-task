@@ -18,6 +18,7 @@
 import { watch, ref, onMounted, onUnmounted } from 'vue'
 import GraphToolbar from './GraphToolbar.vue'
 import { linkId } from '../utils/graph.js'
+import { escapeHtml } from '../utils/escape-html.js'
 import { linkColor, linkWidth } from '../utils/graph-styles.js'
 import { drawNode } from '../utils/graph-render.js'
 import { usePathMode } from '../composables/usePathMode.js'
@@ -73,8 +74,8 @@ function isPathLink(link) {
   return isLinkOnPath(linkId(link))
 }
 
-function getNodeLabel(node)  { return node.title }
-function getLinkLabel(link)  { return link.label }
+function getNodeLabel(node)  { return escapeHtml(node.title) }
+function getLinkLabel(link)  { return escapeHtml(link.label) }
 function getLinkColor(link)  { return linkColor(isPathLink(link), pathActive.value && hasPathResult()) }
 function getLinkWidth(link)  { return linkWidth(isPathLink(link)) }
 function getNodeRenderMode() { return 'replace' }
