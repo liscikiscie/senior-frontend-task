@@ -1,119 +1,354 @@
-<!--
-  Task 2 — Algorithm: see the TODO block inside <script setup>.
--->
 <template>
-  <div ref="containerEl" style="width:100%;height:100%" />
+  <div class="graph-wrapper">
+    <div class="graph-toolbar">
+      <button
+        type="button"
+        :class="['path-toggle', { active: pathActive }]"
+        :aria-pressed="pathActive"
+        aria-label="Toggle shortest-path mode"
+        @click="onPathToggleClick"
+      >
+        {{ pathActive ? '✕ Path' : 'Path' }}
+      </button>
+      <span
+        v-if="pathActive"
+        class="path-hint"
+        role="status"
+        aria-live="polite"
+      >
+        {{ pathHint }}
+      </span>
+    </div>
+
+    <div
+      ref="containerEl"
+      :class="['graph-canvas', { ready: graphReady }]"
+    />
+
+    <div
+      v-if="pathNoPathFound"
+      class="no-path-overlay"
+      role="alert"
+      aria-live="assertive"
+    >
+      No path found
+    </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import ForceGraph from 'force-graph'
 import { TYPE_COLORS, DEFAULT_COLOR } from '../utils/types.js'
+import { linkId } from '../utils/graph.js'
+import { drawNodeCircle, drawHighlightRing, drawNodeLabel } from '../utils/canvas-render.js'
+import { usePathMode } from '../composables/usePathMode.js'
+import { useResizeObserver } from '../composables/useResizeObserver.js'
+import { GRAPH_COLORS, GRAPH_DIMS } from '../domain/graph/theme.js'
 
 const props = defineProps({
   data:         { type: Object, default: () => ({ nodes: [], links: [] }) },
   selectedSlug: { type: String, default: null },
-  // Task 3: add filterQuery prop here and use it in nodeCanvasObject
-  // filterQuery: { type: String, default: '' },
 })
-const emit = defineEmits(['select'])
+const emit = defineEmits(['select', 'path-mode-change'])
 
 const containerEl = ref(null)
+const graphReady = ref(false)
 let fg = null
+let lastFocusedSlug = null
+let resizeApplyTimerId = null
+let pendingResizeRect = null
+
+function getDataProp() {
+  return props.data
+}
+
+function getSelectedSlugProp() {
+  return props.selectedSlug
+}
+
+function getLinks() {
+  return props.data.links
+}
+
+const {
+  active:       pathActive,
+  hint:         pathHint,
+  noPathFound:  pathNoPathFound,
+  toggle:       togglePath,
+  pickNode:     pickPathNode,
+  isNodeOnPath,
+  isLinkOnPath,
+  hasResult:    hasPathResult,
+} = usePathMode(getLinks)
+
+function onPathToggleClick() {
+  const active = togglePath()
+  emit('path-mode-change', active)
+}
+
+function handleNodeClick(node) {
+  if (!pathActive.value) {
+    emit('select', node.slug)
+    return
+  }
+  pickPathNode(node.slug)
+}
+
+function exitPathMode() {
+  togglePath()
+  emit('path-mode-change', false)
+}
+
+function onWindowKeydown(event) {
+  if (event.key === 'Escape' && pathActive.value) {
+    exitPathMode()
+  }
+}
+
+function isOnPath(node) {
+  return isNodeOnPath(node.slug)
+}
+
+function isPathLink(link) {
+  return isLinkOnPath(linkId(link))
+}
+
+function shouldDimNode(node) {
+  return pathActive.value && hasPathResult() && !isOnPath(node)
+}
 
 function nodeColor(node) {
+  if (isOnPath(node)) return GRAPH_COLORS.pathNode
   return TYPE_COLORS[node.type] || DEFAULT_COLOR
 }
 
-onMounted(() => {
+function buildLinkColor(link) {
+  if (isPathLink(link)) return GRAPH_COLORS.pathLink
+  if (pathActive.value && hasPathResult()) return GRAPH_COLORS.dimLink
+  return GRAPH_COLORS.idleLink
+}
+
+function buildLinkWidth(link) {
+  return isPathLink(link) ? GRAPH_DIMS.linkWidth.path : GRAPH_DIMS.linkWidth.idle
+}
+
+function getNodeLabel(node) {
+  return node.title
+}
+
+function getLinkLabel(link) {
+  return link.label
+}
+
+function getNodeRenderMode() {
+  return 'replace'
+}
+
+function renderNode(node, ctx, globalScale) {
+  const isSelected    = node.slug === props.selectedSlug
+  const onPath        = isOnPath(node)
+  const isHighlighted = isSelected || onPath
+  const radius        = isHighlighted ? GRAPH_DIMS.nodeRadius.highlight : GRAPH_DIMS.nodeRadius.default
+
+  ctx.globalAlpha = shouldDimNode(node) ? GRAPH_DIMS.dimNodeAlpha : 1
+
+  drawNodeCircle(ctx, node, radius, nodeColor(node))
+
+  if (isHighlighted) {
+    const ringColor = onPath ? GRAPH_COLORS.pathNode : GRAPH_COLORS.selectedRing
+    const ringWidth = onPath ? GRAPH_DIMS.ringWidth.path : GRAPH_DIMS.ringWidth.selected
+    drawHighlightRing(ctx, node, radius, ringColor, ringWidth)
+  }
+
+  if (globalScale >= GRAPH_DIMS.labelVisibleScale) {
+    drawNodeLabel(ctx, node, globalScale, radius)
+  }
+
+  ctx.globalAlpha = 1
+}
+
+function findNodeBySlug(slug) {
+  if (!fg) return null
+  for (const node of fg.graphData().nodes) {
+    if (node.slug === slug) return node
+  }
+  return null
+}
+
+function syncGraphData(nextData) {
+  fg?.graphData(nextData)
+}
+
+function centerOnSlug(slug) {
+  const node = findNodeBySlug(slug)
+  if (node?.x != null) fg.centerAt(node.x, node.y, GRAPH_DIMS.centerDurationMs)
+}
+
+function fitGraphToScreen() {
+  if (!fg) return
+  fg.zoomToFit(GRAPH_DIMS.closeFitDurationMs, GRAPH_DIMS.fitPaddingPx)
+}
+
+function focusOnSelectedNode(slug) {
+  if (!slug) {
+    if (lastFocusedSlug) {
+      lastFocusedSlug = null
+      fitGraphToScreen()
+    }
+    return
+  }
+  if (!fg) return
+  lastFocusedSlug = slug
+  centerOnSlug(slug)
+}
+
+function revealFittedGraph() {
+  if (graphReady.value || !fg) return
+  fg.zoomToFit(GRAPH_DIMS.fitDurationMs, GRAPH_DIMS.fitPaddingPx)
+  graphReady.value = true
+}
+
+function performFinalFit() {
+  if (!fg) return
+  fg.zoomToFit(GRAPH_DIMS.finalFitDurationMs, GRAPH_DIMS.fitPaddingPx)
+}
+
+function initForceGraph() {
   fg = ForceGraph()(containerEl.value)
+    .warmupTicks(GRAPH_DIMS.warmupTicks)
+    .cooldownTicks(GRAPH_DIMS.cooldownTicks)
     .graphData(props.data)
     .nodeId('slug')
-    .nodeLabel('title')
-    .linkColor(() => '#334455')
-    .linkWidth(1)
+    .nodeLabel(getNodeLabel)
+    .linkColor(buildLinkColor)
+    .linkWidth(buildLinkWidth)
     .linkDirectionalArrowLength(3)
     .linkDirectionalArrowRelPos(1)
-    .linkLabel('label')
-    .backgroundColor('#1a1a2e')
-    .onNodeClick(node => emit('select', node.slug))
-    .nodeCanvasObject((node, ctx, globalScale) => {
-      const isSelected = node.slug === props.selectedSlug
-      // Task 3: compute match opacity here using props.filterQuery
-      // const isMatch = !props.filterQuery ||
-      //   node.title.toLowerCase().includes(props.filterQuery.toLowerCase())
-      // ctx.globalAlpha = isMatch ? 1 : 0.15
+    .linkLabel(getLinkLabel)
+    .backgroundColor(GRAPH_COLORS.bg)
+    .onNodeClick(handleNodeClick)
+    .onEngineStop(performFinalFit)
+    .nodeCanvasObject(renderNode)
+    .nodeCanvasObjectMode(getNodeRenderMode)
+}
 
-      const color = nodeColor(node)
-      const r = isSelected ? 7 : 4
-
-      ctx.beginPath()
-      ctx.arc(node.x, node.y, r, 0, 2 * Math.PI)
-      ctx.fillStyle = color
-      ctx.fill()
-
-      if (isSelected) {
-        ctx.beginPath()
-        ctx.arc(node.x, node.y, r + 2.5, 0, 2 * Math.PI)
-        ctx.strokeStyle = '#ffffff'
-        ctx.lineWidth = 1.5
-        ctx.stroke()
-      }
-
-      if (globalScale >= 1.2) {
-        const fontSize = Math.min(12 / globalScale, 3)
-        ctx.font = `${fontSize}px Sans-Serif`
-        ctx.fillStyle = 'rgba(220,220,220,0.85)'
-        ctx.textAlign = 'center'
-        ctx.fillText(node.title, node.x, node.y + r + fontSize + 1)
-      }
-
-      // Task 3: reset ctx.globalAlpha = 1 after drawing each node
-    })
-    .nodeCanvasObjectMode(() => 'replace')
-
+function applyInitialSize() {
   const { width, height } = containerEl.value.getBoundingClientRect()
   if (width && height) fg.width(width).height(height)
+}
 
-  const ro = new ResizeObserver(([e]) => {
-    fg?.width(e.contentRect.width).height(e.contentRect.height)
-  })
-  ro.observe(containerEl.value)
-  onUnmounted(() => ro.disconnect())
-})
+function applyPendingResize() {
+  resizeApplyTimerId = null
+  if (!fg || !pendingResizeRect) return
+  fg.width(pendingResizeRect.width).height(pendingResizeRect.height)
+  if (props.selectedSlug && lastFocusedSlug) centerOnSlug(lastFocusedSlug)
+  pendingResizeRect = null
+}
 
-onUnmounted(() => {
+function handleContainerResize(entries) {
+  if (!fg) return
+  pendingResizeRect = entries[0].contentRect
+  if (resizeApplyTimerId !== null) return
+  resizeApplyTimerId = setTimeout(applyPendingResize, GRAPH_DIMS.resizeDebounceMs)
+}
+
+function teardownForceGraph() {
+  if (resizeApplyTimerId !== null) {
+    clearTimeout(resizeApplyTimerId)
+    resizeApplyTimerId = null
+  }
+  pendingResizeRect = null
   fg?.pauseAnimation()
   fg = null
+  lastFocusedSlug = null
+  graphReady.value = false
+}
+
+watch(getDataProp, syncGraphData)
+watch(getSelectedSlugProp, focusOnSelectedNode)
+
+useResizeObserver(containerEl, handleContainerResize)
+
+onMounted(async function setupGraph() {
+  await nextTick()
+  initForceGraph()
+  applyInitialSize()
+  setTimeout(revealFittedGraph, GRAPH_DIMS.revealDelayMs)
+  window.addEventListener('keydown', onWindowKeydown)
 })
 
-watch(() => props.data, d => fg?.graphData(d))
-
-watch(() => props.selectedSlug, slug => {
-  if (!slug || !fg) return
-  const node = fg.graphData().nodes.find(n => n.slug === slug)
-  if (node?.x != null) fg.centerAt(node.x, node.y, 400)
+onUnmounted(function teardownGraph() {
+  window.removeEventListener('keydown', onWindowKeydown)
+  teardownForceGraph()
 })
-
-// ─────────────────────────────────────────────────────────────────────────────
-// TODO Task 2 — Shortest Path (BFS)
-//
-// Add a "Path" toggle button (above or overlaid on the graph). When active:
-//
-//   1. Track a `pathStart` and `pathEnd` slug via two successive node clicks.
-//   2. Build an adjacency list from props.data.links (treat edges as undirected).
-//   3. Run BFS from pathStart to pathEnd; record the predecessor map to
-//      reconstruct the path.
-//   4. Expose the path as a Set of slugs and a Set of link ids.
-//   5. In nodeCanvasObject: full opacity + bright ring for path nodes;
-//      dim (opacity 0.2) for all others.
-//   6. In linkColor / linkWidth: highlight path edges; dim the rest.
-//   7. If no path exists, show a "No path found" overlay.
-//   8. Toggling Path Mode off resets all state.
-//
-// Constraints worth thinking about:
-//   • force-graph mutates link objects (source/target become node refs).
-//     Your adjacency list must handle both string slugs and node objects.
-//   • BFS on the canvas thread is synchronous; keep it O(V + E).
-// ─────────────────────────────────────────────────────────────────────────────
 </script>
+
+<style scoped>
+.graph-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.graph-canvas {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.25s ease-out;
+}
+.graph-canvas.ready {
+  opacity: 1;
+}
+.graph-toolbar {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.path-toggle {
+  background: #2a2a3e;
+  color: #ddd;
+  border: 1px solid #3a3a52;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.path-toggle:hover {
+  background: #34344a;
+}
+.path-toggle:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
+}
+.path-toggle.active {
+  background: #ffd166;
+  color: #1a1a2e;
+  border-color: #ffd166;
+}
+.path-hint {
+  background: rgba(26, 26, 46, 0.85);
+  color: #ddd;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+.no-path-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(231, 76, 60, 0.92);
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 3;
+}
+</style>

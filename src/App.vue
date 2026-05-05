@@ -30,7 +30,7 @@
           @select="onSelect"
         />
       </div>
-      <div :class="['detail-pane', { open: !!selectedSlug }]">
+      <div :class="['detail-pane', { open: panelOpen }]">
         <div v-if="chunkLoading" class="panel-loading">Loading…</div>
         <ChunkPanel
           v-else-if="chunk"
@@ -53,19 +53,49 @@ import Graph from './components/Graph.vue'
 import ChunkPanel from './components/ChunkPanel.vue'
 import SourcesView from './components/SourcesView.vue'
 
+const PANEL_OPEN_DELAY_MS = 80
+const CHUNK_LOAD_DELAY_MS = 80
+
 const tab = ref('graph')
 const selectedSlug = ref(null)
 const chunk = ref(null)
 const chunkLoading = ref(false)
+const panelOpen = ref(false)
+let panelOpenTimerId = null
 
 function onSelect(slug) {
   selectedSlug.value = selectedSlug.value === slug ? null : slug
 }
 
-watch(selectedSlug, async (slug) => {
-  if (!slug) { chunk.value = null; return }
+function cancelPanelOpenTimer() {
+  if (panelOpenTimerId === null) return
+  clearTimeout(panelOpenTimerId)
+  panelOpenTimerId = null
+}
+
+function schedulePanelOpen() {
+  panelOpenTimerId = setTimeout(function openPanel() {
+    panelOpen.value = true
+    panelOpenTimerId = null
+  }, PANEL_OPEN_DELAY_MS)
+}
+
+function delay(ms) {
+  return new Promise(function scheduleResolve(resolve) {
+    setTimeout(resolve, ms)
+  })
+}
+
+watch(selectedSlug, async function loadChunkForSlug(slug) {
+  cancelPanelOpenTimer()
+  if (!slug) {
+    panelOpen.value = false
+    chunk.value = null
+    return
+  }
+  if (!panelOpen.value) schedulePanelOpen()
   chunkLoading.value = true
-  await new Promise(r => setTimeout(r, 80))
+  await delay(CHUNK_LOAD_DELAY_MS)
   chunk.value = getChunk(slug)
   chunkLoading.value = false
 })
