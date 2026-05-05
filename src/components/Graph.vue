@@ -101,9 +101,10 @@ function isPathLink(link) {
 
 function getNodeLabel(node)  { return escapeHtml(node.title) }
 function getLinkLabel(link)  { return escapeHtml(link.label) }
-function getLinkColor(link)  { return linkColor(isPathLink(link), pathActive.value && hasPathResult()) }
-function getLinkWidth(link)  { return linkWidth(isPathLink(link)) }
-function getNodeRenderMode() { return 'replace' }
+function getLinkColor(link)     { return linkColor(isPathLink(link), pathActive.value && hasPathResult()) }
+function getLinkWidth(link)     { return linkWidth(isPathLink(link)) }
+function getLinkParticles(link) { return isPathLink(link) ? 2 : 0 }
+function getNodeRenderMode()    { return 'replace' }
 
 function renderNode(node, ctx, globalScale) {
   const onPath    = isOnPath(node)
@@ -124,6 +125,9 @@ function configureForceGraph(fg) {
     .linkWidth(getLinkWidth)
     .linkDirectionalArrowLength(3)
     .linkDirectionalArrowRelPos(1)
+    .linkDirectionalParticles(getLinkParticles)
+    .linkDirectionalParticleWidth(3)
+    .linkDirectionalParticleSpeed(0.008)
     .onNodeClick(handleNodeClick)
     .nodeCanvasObject(renderNode)
     .nodeCanvasObjectMode(getNodeRenderMode)
@@ -144,6 +148,10 @@ watch(() => props.selectedSlug, camera.focusSlug)
 function refreshGraphView() {
   const fg = getInstance()
   if (!fg) return
+  // force-graph caches the resolved per-link particle count on first bind;
+  // re-applying the setter forces it to walk the link list and pick up the
+  // new isPathLink() values for the current path state.
+  fg.linkDirectionalParticles(getLinkParticles)
   const center = fg.centerAt() ?? { x: 0, y: 0 }
   fg.centerAt(center.x, center.y, 0)
 }
