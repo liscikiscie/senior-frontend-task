@@ -16,6 +16,7 @@ export const GRAPH_DIMS = {
     path:     2,
     selected: 1.5,
   },
+  ringClearance: 4,
   linkWidth: {
     path: 2.5,
     idle: 1,

@@ -17,7 +17,8 @@ export function drawNode(ctx, node, globalScale, state) {
   }
 
   if (globalScale >= GRAPH_DIMS.labelVisibleScale) {
-    drawNodeLabel(ctx, node, globalScale, radius)
+    const labelRadius = isHighlighted ? radius + GRAPH_DIMS.ringClearance : radius
+    drawNodeLabel(ctx, node, globalScale, labelRadius)
   }
 
   ctx.globalAlpha = 1
