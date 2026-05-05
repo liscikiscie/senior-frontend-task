@@ -6,20 +6,33 @@
         <button :class="['tab', { active: tab === 'graph' }]" @click="tab = 'graph'">Graph</button>
         <button :class="['tab', { active: tab === 'sources' }]" @click="tab = 'sources'">Source Files</button>
       </nav>
+
       <span v-if="tab === 'graph'" class="status">
         {{ graphData.nodes.length }} chunks · {{ graphData.links.length }} links
       </span>
-
-      <!--
-        TODO Task 3 — Live Graph Search
-        Add a search <input> here. Pass the query string down to <Graph> as a
-        new `filterQuery` prop. When the query is non-empty:
-          • Nodes whose title matches (case-insensitive) render at full opacity.
-          • All other nodes are dimmed to ~20% opacity inside nodeCanvasObject.
-          • Show "N matches" count here and an × clear button.
-        Keyboard: "/" focuses the input; Escape clears it.
-        Hint: no re-init needed — the canvas loop already reads props every frame.
-      -->
+       <div v-if="tab === 'graph'" class="search">
+        <input
+          ref="searchInputEl"
+          v-model="searchQuery"
+          type="search"
+          class="search-input"
+          placeholder="Search nodes…  (press /)"
+          aria-label="Search nodes by title"
+          @keydown.escape="onSearchEscape"
+        />
+        <span v-if="searchActive" class="search-count" role="status" aria-live="polite">
+          {{ matchCount }} {{ matchCount === 1 ? 'match' : 'matches' }}
+        </span>
+        <button
+          v-if="searchActive"
+          type="button"
+          class="search-clear"
+          aria-label="Clear search"
+          @click="clearSearch"
+        >
+          ×
+        </button>
+      </div>
     </header>
 
     <div v-if="tab === 'graph'" class="app-body">
@@ -27,6 +40,7 @@
         <Graph
           :data="graphData"
           :selected-slug="selectedSlug"
+          :filter-query="searchQuery"
           @select="onSelect"
         />
       </div>
@@ -47,8 +61,9 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { graphData, getChunk } from './data/mock.js'
+import { matchedSlugs } from './utils/search.js'
 import Graph from './components/Graph.vue'
 import ChunkPanel from './components/ChunkPanel.vue'
 import SourcesView from './components/SourcesView.vue'
@@ -61,10 +76,45 @@ const selectedSlug = ref(null)
 const chunk = ref(null)
 const chunkLoading = ref(false)
 const panelOpen = ref(false)
+const searchQuery = ref('')
+const searchInputEl = ref(null)
 let panelOpenTimerId = null
+
+const matched = computed(function computeMatched() {
+  return matchedSlugs(graphData.nodes, searchQuery.value)
+})
+const searchActive = computed(function isSearchActive() {
+  return matched.value !== null
+})
+const matchCount = computed(function countMatches() {
+  return matched.value?.size ?? 0
+})
 
 function onSelect(slug) {
   selectedSlug.value = selectedSlug.value === slug ? null : slug
+}
+
+function clearSearch() {
+  searchQuery.value = ''
+}
+
+function onSearchEscape() {
+  if (searchQuery.value) clearSearch()
+  searchInputEl.value?.blur()
+}
+
+function isTypingTarget(target) {
+  if (!target) return false
+  const tag = target.tagName
+  return tag === 'INPUT' || tag === 'TEXTAREA' || target.isContentEditable
+}
+
+function onWindowKeydown(event) {
+  if (event.key === '/' && !isTypingTarget(event.target)) {
+    event.preventDefault()
+    searchInputEl.value?.focus()
+    searchInputEl.value?.select()
+  }
 }
 
 function cancelPanelOpenTimer() {
@@ -98,5 +148,13 @@ watch(selectedSlug, async function loadChunkForSlug(slug) {
   await delay(CHUNK_LOAD_DELAY_MS)
   chunk.value = getChunk(slug)
   chunkLoading.value = false
+})
+
+onMounted(function bindShortcuts() {
+  window.addEventListener('keydown', onWindowKeydown)
+})
+
+onUnmounted(function unbindShortcuts() {
+  window.removeEventListener('keydown', onWindowKeydown)
 })
 </script>

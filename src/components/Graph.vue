@@ -15,12 +15,13 @@
 </template>
 
 <script setup>
-import { watch, ref, onMounted, onUnmounted } from 'vue'
+import { watch, ref, computed, onMounted, onUnmounted } from 'vue'
 import GraphToolbar from './GraphToolbar.vue'
 import { linkId } from '../utils/graph.js'
 import { escapeHtml } from '../utils/escape-html.js'
 import { linkColor, linkWidth } from '../utils/graph-styles.js'
 import { drawNode } from '../utils/graph-render.js'
+import { matchedSlugs } from '../utils/search.js'
 import { usePathMode } from '../composables/usePathMode.js'
 import { useGraphCamera } from '../composables/useGraphCamera.js'
 import { useForceGraph } from '../composables/useForceGraph.js'
@@ -28,6 +29,7 @@ import { useForceGraph } from '../composables/useForceGraph.js'
 const props = defineProps({
   data:         { type: Object, default: () => ({ nodes: [], links: [] }) },
   selectedSlug: { type: String, default: null },
+  filterQuery:  { type: String, default: '' },
 })
 const emit = defineEmits(['select', 'path-mode-change'])
 
@@ -35,6 +37,15 @@ const containerEl = ref(null)
 
 function getLinks() {
   return props.data.links
+}
+
+const searchMatches = computed(function computeSearchMatches() {
+  return matchedSlugs(props.data.nodes, props.filterQuery)
+})
+
+function isSearchDimmed(node) {
+  const matches = searchMatches.value
+  return matches !== null && !matches.has(node.slug)
 }
 
 const {
@@ -81,11 +92,12 @@ function getLinkWidth(link)  { return linkWidth(isPathLink(link)) }
 function getNodeRenderMode() { return 'replace' }
 
 function renderNode(node, ctx, globalScale) {
-  const onPath = isOnPath(node)
+  const onPath    = isOnPath(node)
+  const dimByPath = pathActive.value && hasPathResult() && !onPath
   drawNode(ctx, node, globalScale, {
     isSelected: node.slug === props.selectedSlug,
     isOnPath:   onPath,
-    shouldDim:  pathActive.value && hasPathResult() && !onPath,
+    shouldDim:  dimByPath || isSearchDimmed(node),
   })
 }
 
@@ -108,6 +120,18 @@ const camera = useGraphCamera(getInstance, containerEl)
 
 watch(() => props.data,         function syncGraphData(next) { getInstance()?.graphData(next) })
 watch(() => props.selectedSlug, camera.focusSlug)
+// force-graph 1.x doesn't expose a public `refresh()` method, and after the
+// physics engine cools down the canvas only repaints on user interaction
+// (zoom, pan, hover). Without an explicit nudge, typing in the search input
+// updates Vue state but the dim doesn't appear until the user moves the mouse
+// over the canvas. Re-setting the camera at its current position with 0 ms
+// duration is a no-op visually but reliably triggers a re-render.
+watch(() => props.filterQuery,  function refreshAfterFilter() {
+  const fg = getInstance()
+  if (!fg) return
+  const center = fg.centerAt() ?? { x: 0, y: 0 }
+  fg.centerAt(center.x, center.y, 0)
+})
 
 onMounted(function bindKeydown() {
   window.addEventListener('keydown', onWindowKeydown)
