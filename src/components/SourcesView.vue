@@ -143,13 +143,13 @@ watch(selectedPart, async (sp) => {
 .sources-loading {
   padding: 40px;
   text-align: center;
-  color: #666;
+  color: #9aa4b3;
   font-size: 13px;
 }
 
 .sources-header {
   font-size: 12px;
-  color: #666;
+  color: #9aa4b3;
   margin-bottom: 14px;
 }
 
@@ -184,7 +184,7 @@ watch(selectedPart, async (sp) => {
 .source-card-title { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .source-card-name { font-size: 14px; font-weight: 600; color: #e8e8e8; word-break: break-all; }
 .source-card-meta { font-size: 11px; color: #888; }
-.source-card-chevron { font-size: 10px; color: #666; flex-shrink: 0; }
+.source-card-chevron { font-size: 10px; color: #9aa4b3; flex-shrink: 0; }
 
 .source-card-body {
   padding: 0 16px 14px;

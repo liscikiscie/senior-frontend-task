@@ -123,6 +123,6 @@ const parsedBody  = computed(() => marked.parse(props.chunk.body_markdown || '')
 }
 
 .source-name { display: block; font-size: 12px; font-weight: 600; color: #bbb; word-break: break-all; }
-.source-meta { display: block; font-size: 11px; color: #666; margin-top: 2px; }
+.source-meta { display: block; font-size: 11px; color: #9aa4b3; margin-top: 2px; }
 .source-note { font-size: 12px; color: #888; margin-top: 4px; line-height: 1.4; }
 </style>

@@ -285,7 +285,7 @@ onUnmounted(function unbindShortcuts() {
 
 .status {
   font-size: 12px;
-  color: #666;
+  color: #9aa4b3;
   white-space: nowrap;
 }
 
@@ -328,7 +328,7 @@ onUnmounted(function unbindShortcuts() {
 .empty-state {
   padding: 40px 20px;
   text-align: center;
-  color: #555;
+  color: #9aa4b3;
   font-size: 13px;
 }
 </style>
