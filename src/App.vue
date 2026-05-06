@@ -220,6 +220,14 @@ onUnmounted(function unbindShortcuts() {
   background: #16213e;
   border-bottom: 1px solid #0f3460;
   flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    gap: 10px;
+    padding: 8px 12px;
+  }
 }
 
 .app-header h1 {
@@ -270,6 +278,14 @@ onUnmounted(function unbindShortcuts() {
   padding: 4px 10px;
   font-size: 13px;
   width: 240px;
+  min-width: 0;
+  max-width: 100%;
+}
+
+@media (max-width: 768px) {
+  .search-input {
+    width: 160px;
+  }
 }
 .search-input::placeholder {
   color: #9aa4b3;

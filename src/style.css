@@ -43,6 +43,7 @@ main#main-content:focus {
   display: flex;
   flex: 1;
   overflow: hidden;
+  position: relative;
 }
 
 /* Skip-link: hidden off-screen until it receives focus, then re-enters
@@ -98,6 +99,28 @@ main#main-content:focus {
 .detail-pane.open {
   width: 800px;
   min-width: 500px;
+}
+
+/* Tablet — shrink the detail pane to half-viewport so the graph stays
+   meaningful below ~1280 CSS pixels (WCAG 1.4.10 Reflow). */
+@media (max-width: 1280px) {
+  .detail-pane.open {
+    width: 50%;
+    min-width: 360px;
+  }
+}
+
+/* Mobile — promote the panel to a fullscreen overlay above the graph.
+   `.app-body { position: relative }` provides the positioning context. */
+@media (max-width: 768px) {
+  .detail-pane.open {
+    width: 100%;
+    min-width: 0;
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    border-left: none;
+  }
 }
 
 .panel-loading {
