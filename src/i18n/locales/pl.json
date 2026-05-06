@@ -15,6 +15,7 @@
     "searchPlaceholder": "Szukaj…",
     "searchAria": "Wyszukaj węzły po tytule",
     "matchesCount": "brak dopasowań | {n} dopasowanie | {n} dopasowania | {n} dopasowań",
+    "noMatchesFor": "Brak dopasowań dla „{query}”",
     "clearSearch": "Wyczyść wyszukiwanie",
     "language": "Język",
     "switchToLanguage": "Przełącz język na: {name}",

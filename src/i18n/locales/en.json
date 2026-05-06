@@ -15,6 +15,7 @@
     "searchPlaceholder": "Search…",
     "searchAria": "Search nodes by title",
     "matchesCount": "no matches | {n} match | {n} matches",
+    "noMatchesFor": "No matches for “{query}”",
     "clearSearch": "Clear search",
     "language": "Language",
     "switchToLanguage": "Switch language to: {name}",

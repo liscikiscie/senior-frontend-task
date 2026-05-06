@@ -72,6 +72,17 @@
             @select="onSelect"
             @path-mode-change="onPathModeChange"
           />
+          <div
+            v-if="searchActive && matchCount === 0"
+            class="no-matches-overlay"
+            role="status"
+            aria-live="polite"
+          >
+            <p class="no-matches-text">{{ t('app.noMatchesFor', { query: searchQuery }) }}</p>
+            <button type="button" class="no-matches-clear" @click="clearSearch">
+              {{ t('app.clearSearch') }}
+            </button>
+          </div>
         </div>
         <aside
           :class="['detail-pane', { open: panelOpen }]"
@@ -371,5 +382,45 @@ onUnmounted(function unbindShortcuts() {
   text-align: center;
   color: #9aa4b3;
   font-size: 13px;
+}
+
+.no-matches-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(15, 42, 74, 0.94);
+  border: 1px solid #2a5080;
+  color: #e8e8e8;
+  padding: 16px 24px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  max-width: 80%;
+  z-index: 3;
+}
+
+.no-matches-text {
+  font-size: 14px;
+  word-break: break-word;
+  text-align: center;
+}
+
+.no-matches-clear {
+  background: #ffd166;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.no-matches-clear:hover { background: #ffdd88; }
+.no-matches-clear:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
 }
 </style>
