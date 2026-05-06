@@ -55,7 +55,8 @@
     "noMatches": "No matches",
     "selectStart": "Pick a start node",
     "selectEnd": "Pick an end node",
-    "stepsCount": "0 steps | {n} step | {n} steps"
+    "stepsCount": "0 steps | {n} step | {n} steps",
+    "pathRoute": "Route: {route}"
   },
   "types": {
     "process_stage": "Process Stage",

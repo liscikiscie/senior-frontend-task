@@ -29,6 +29,11 @@ export function usePathMode(linksSource) {
   const state       = computed(getState)
   const pathSize    = computed(() => result.value?.nodeSlugs.size ?? 0)
   const noPathFound = computed(() => active.value && state.value === 'notFound')
+  // findShortestPath walks the predecessor chain from end to start, so the
+  // resulting Set iterates end → … → start. Reversing gives a natural
+  // start → end ordering for screen-reader announcements and any future
+  // visual breadcrumb.
+  const pathSlugs   = computed(() => result.value ? [...result.value.nodeSlugs].reverse() : [])
 
   function reset() {
     start.value  = null
@@ -70,6 +75,7 @@ export function usePathMode(linksSource) {
     active: readonly(active),
     state,
     pathSize,
+    pathSlugs,
     noPathFound,
     toggle,
     pickNode,

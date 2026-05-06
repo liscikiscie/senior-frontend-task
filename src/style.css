@@ -56,3 +56,18 @@ a {
   color: #9aa4b3;
   font-size: 13px;
 }
+
+/* Visually hidden but exposed to assistive technology — used for aria-live
+   announcements that should not occupy layout space (WCAG 4.1.3). Standard
+   recipe per the Tailwind / WAI-ARIA APG sr-only convention. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

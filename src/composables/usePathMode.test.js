@@ -62,6 +62,22 @@ describe('usePathMode', () => {
     expect(m.noPathFound.value).toBe(true)
   })
 
+  it('pathSlugs lists nodes from start to end', () => {
+    const m = fresh()
+    m.toggle()
+    m.pickNode('a')
+    m.pickNode('c')
+    expect(m.pathSlugs.value).toEqual(['a', 'b', 'c'])
+  })
+
+  it('pathSlugs is empty when no path exists', () => {
+    const m = fresh()
+    m.toggle()
+    m.pickNode('a')
+    m.pickNode('d')
+    expect(m.pathSlugs.value).toEqual([])
+  })
+
   it('isLinkOnPath returns true for edges traversed by the BFS result', () => {
     const m = fresh()
     m.toggle()

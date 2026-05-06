@@ -55,7 +55,8 @@
     "noMatches": "Brak dopasowań",
     "selectStart": "Wybierz początek",
     "selectEnd": "Wybierz koniec",
-    "stepsCount": "0 kroków | {n} krok | {n} kroki | {n} kroków"
+    "stepsCount": "0 kroków | {n} krok | {n} kroki | {n} kroków",
+    "pathRoute": "Trasa: {route}"
   },
   "types": {
     "process_stage": "Etap procesu",

@@ -3,6 +3,7 @@
     <GraphToolbar
       :path-active="pathActive"
       :path-hint="pathHint"
+      :path-route-announcement="pathRouteAnnouncement"
       :path-no-path-found="pathNoPathFound"
       @toggle="onPathToggleClick"
     />
@@ -55,6 +56,7 @@ const {
   active:       pathActive,
   state:        pathState,
   pathSize,
+  pathSlugs,
   noPathFound:  pathNoPathFound,
   toggle:       togglePath,
   pickNode:     pickPathNode,
@@ -62,6 +64,19 @@ const {
   isLinkOnPath,
   hasResult:    hasPathResult,
 } = usePathMode(getLinks)
+
+const nodeTitleBySlug = computed(function indexNodes() {
+  return new Map(props.data.nodes.map(n => [n.slug, n.title]))
+})
+
+const pathTitles = computed(function resolvePathTitles() {
+  return pathSlugs.value.map(slug => nodeTitleBySlug.value.get(slug) ?? slug)
+})
+
+const pathRouteAnnouncement = computed(function buildRouteAnnouncement() {
+  if (!pathTitles.value.length) return ''
+  return t('graph.pathRoute', { route: pathTitles.value.join(' → ') })
+})
 
 const pathHint = computed(function buildPathHint() {
   switch (pathState.value) {

@@ -16,6 +16,7 @@
     >
       {{ pathHint }}
     </span>
+    <span class="sr-only" aria-live="polite">{{ pathRouteAnnouncement }}</span>
   </div>
 
   <div
@@ -32,9 +33,10 @@
 import { useI18n } from 'vue-i18n'
 
 defineProps({
-  pathActive:       { type: Boolean, required: true },
-  pathHint:         { type: String,  default: '' },
-  pathNoPathFound:  { type: Boolean, default: false },
+  pathActive:             { type: Boolean, required: true },
+  pathHint:               { type: String,  default: '' },
+  pathRouteAnnouncement:  { type: String,  default: '' },
+  pathNoPathFound:        { type: Boolean, default: false },
 })
 defineEmits(['toggle'])
 
