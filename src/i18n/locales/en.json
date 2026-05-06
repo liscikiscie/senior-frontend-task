@@ -14,6 +14,7 @@
     "linksCount": "no links | {n} link | {n} links",
     "searchPlaceholder": "Search…",
     "searchAria": "Search nodes by title",
+    "searchShortcutHint": "Press slash to focus this field",
     "matchesCount": "no matches | {n} match | {n} matches",
     "noMatchesFor": "No matches for “{query}”",
     "clearSearch": "Clear search",

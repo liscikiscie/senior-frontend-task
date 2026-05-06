@@ -31,8 +31,11 @@
           class="search-input"
           :placeholder="t('app.searchPlaceholder')"
           :aria-label="t('app.searchAria')"
+          aria-describedby="search-shortcut"
           @keydown.escape="onSearchEscape"
         />
+        <kbd v-if="!searchQuery" class="search-kbd" aria-hidden="true">/</kbd>
+        <span id="search-shortcut" class="sr-only">{{ t('app.searchShortcutHint') }}</span>
         <span v-if="searchActive" class="search-count" role="status" aria-live="polite">
           {{ t('app.matchesCount', matchCount, { n: matchCount }) }}
         </span>
@@ -304,6 +307,18 @@ onUnmounted(function unbindShortcuts() {
 .search-input:focus-visible {
   outline: 2px solid #ffd166;
   outline-offset: 2px;
+}
+
+.search-kbd {
+  font-family: 'SF Mono', 'Fira Mono', monospace;
+  font-size: 11px;
+  background: #2a5080;
+  color: #ccc;
+  padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid #3a6090;
+  line-height: 1;
+  user-select: none;
 }
 
 .search-count {
