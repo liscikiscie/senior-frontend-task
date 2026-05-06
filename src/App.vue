@@ -233,6 +233,7 @@ onUnmounted(function unbindShortcuts() {
   color: #888;
   font-size: 13px;
   padding: 4px 14px;
+  min-height: 28px;
   border-radius: 4px;
   cursor: pointer;
   transition: color 0.1s, background 0.1s;
@@ -285,6 +286,8 @@ onUnmounted(function unbindShortcuts() {
   font-size: 18px;
   line-height: 1;
   padding: 2px 6px;
+  min-width: 28px;
+  min-height: 28px;
   cursor: pointer;
   border-radius: 3px;
 }
@@ -316,6 +319,8 @@ onUnmounted(function unbindShortcuts() {
   font-weight: 600;
   letter-spacing: 0.5px;
   padding: 3px 8px;
+  min-width: 32px;
+  min-height: 28px;
   border-radius: 3px;
   cursor: pointer;
   transition: color 0.1s, background 0.1s;
