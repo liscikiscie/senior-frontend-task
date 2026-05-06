@@ -7,8 +7,11 @@
       <div class="sources-list">
         <div v-for="s in sources" :key="s.source_name" class="source-card">
           <button
+            type="button"
             class="source-card-header"
             :aria-label="t('sourcesView.toggleDetails')"
+            :aria-expanded="!!expanded[s.source_name]"
+            :aria-controls="`source-body-${s.source_name}`"
             @click="toggle(s.source_name)"
           >
             <div class="source-card-title">
@@ -19,10 +22,14 @@
                 · {{ fmtDate(s.processed_at) }}
               </span>
             </div>
-            <span class="source-card-chevron">{{ expanded[s.source_name] ? '▲' : '▼' }}</span>
+            <span class="source-card-chevron" aria-hidden="true">{{ expanded[s.source_name] ? '▲' : '▼' }}</span>
           </button>
 
-          <div v-if="expanded[s.source_name]" class="source-card-body">
+          <div
+            v-if="expanded[s.source_name]"
+            :id="`source-body-${s.source_name}`"
+            class="source-card-body"
+          >
             <div class="source-meta-grid">
               <template v-if="s.source_path">
                 <span class="meta-label">{{ t('sourcesView.meta.path') }}</span>
