@@ -251,7 +251,7 @@ onUnmounted(function unbindShortcuts() {
   width: 240px;
 }
 .search-input::placeholder {
-  color: #6a7a90;
+  color: #9aa4b3;
 }
 .search-input:focus-visible {
   outline: 2px solid #ffd166;
