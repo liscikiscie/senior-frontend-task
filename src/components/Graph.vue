@@ -27,6 +27,7 @@ import { matchedSlugs } from '../utils/search.js'
 import { usePathMode } from '../composables/usePathMode.js'
 import { useGraphCamera } from '../composables/useGraphCamera.js'
 import { useForceGraph } from '../composables/useForceGraph.js'
+import { useReducedMotion } from '../composables/useReducedMotion.js'
 
 const props = defineProps({
   data:         { type: Object, default: () => ({ nodes: [], links: [] }) },
@@ -51,6 +52,7 @@ function isSearchDimmed(node) {
 }
 
 const { t } = useI18n()
+const prefersReducedMotion = useReducedMotion()
 
 const {
   active:       pathActive,
@@ -118,7 +120,10 @@ function getNodeLabel(node)  { return escapeHtml(node.title) }
 function getLinkLabel(link)  { return escapeHtml(link.label) }
 function getLinkColor(link)     { return linkColor(isPathLink(link), pathActive.value && hasPathResult()) }
 function getLinkWidth(link)     { return linkWidth(isPathLink(link)) }
-function getLinkParticles(link) { return isPathLink(link) ? 2 : 0 }
+function getLinkParticles(link) {
+  if (prefersReducedMotion.value) return 0
+  return isPathLink(link) ? 2 : 0
+}
 function getNodeRenderMode()    { return 'replace' }
 
 function renderNode(node, ctx, globalScale) {
@@ -174,6 +179,7 @@ function refreshGraphView() {
 watch(() => props.filterQuery, refreshGraphView)
 watch(pathActive,              refreshGraphView)
 watch(pathState,               refreshGraphView)
+watch(prefersReducedMotion,    refreshGraphView)
 
 onMounted(function bindKeydown() {
   window.addEventListener('keydown', onWindowKeydown)

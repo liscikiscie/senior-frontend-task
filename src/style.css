@@ -67,6 +67,23 @@ main#main-content:focus {
   outline-offset: 2px;
 }
 
+/* Honour OS-level motion preferences (WCAG 2.3.3 AAA Animation from
+   Interactions). Strips CSS transitions/animations and the smooth
+   scroll behaviour; force-graph particles are disabled separately
+   inside the canvas component via useReducedMotion(). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 .detail-pane {
   width: 0;
   min-width: 0;
