@@ -3,7 +3,8 @@
     "title": "Graf wiedzy",
     "tabs": {
       "graph": "Graf",
-      "sources": "Pliki źródłowe"
+      "sources": "Pliki źródłowe",
+      "aria": "Widoki aplikacji"
     },
     "loading": "Ładowanie…",
     "selectNode": "Wybierz fragment, aby zobaczyć szczegóły",

@@ -3,7 +3,8 @@
     "title": "Wiki Knowledge Graph",
     "tabs": {
       "graph": "Graph",
-      "sources": "Source Files"
+      "sources": "Source Files",
+      "aria": "App views"
     },
     "loading": "Loading…",
     "selectNode": "Select a chunk to see details",

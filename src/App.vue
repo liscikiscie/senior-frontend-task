@@ -2,9 +2,19 @@
   <div class="app">
     <header class="app-header">
       <h1>{{ t('app.title') }}</h1>
-      <nav class="tabs">
-        <button :class="['tab', { active: tab === 'graph' }]" @click="tab = 'graph'">{{ t('app.tabs.graph') }}</button>
-        <button :class="['tab', { active: tab === 'sources' }]" @click="tab = 'sources'">{{ t('app.tabs.sources') }}</button>
+      <nav class="tabs" :aria-label="t('app.tabs.aria')">
+        <button
+          type="button"
+          :class="['tab', { active: tab === 'graph' }]"
+          :aria-current="tab === 'graph' ? 'page' : undefined"
+          @click="tab = 'graph'"
+        >{{ t('app.tabs.graph') }}</button>
+        <button
+          type="button"
+          :class="['tab', { active: tab === 'sources' }]"
+          :aria-current="tab === 'sources' ? 'page' : undefined"
+          @click="tab = 'sources'"
+        >{{ t('app.tabs.sources') }}</button>
       </nav>
 
       <span v-if="tab === 'graph'" class="status">
@@ -228,6 +238,10 @@ onUnmounted(function unbindShortcuts() {
   transition: color 0.1s, background 0.1s;
 }
 .tab:hover { color: #ccc; }
+.tab:focus-visible {
+  outline: 2px solid #ffd166;
+  outline-offset: 2px;
+}
 .tab.active {
   background: #0f3460;
   border-color: #1a4a80;
