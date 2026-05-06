@@ -28,10 +28,43 @@ a {
 /* Layout primitives shared between App.vue and SourcesView.vue (both render
    .app-body, .detail-pane and .panel-loading from their own templates).
    Scoped CSS would duplicate them; keep here as the only shared surface. */
+main#main-content {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  overflow: hidden;
+}
+
+main#main-content:focus {
+  outline: none;
+}
+
 .app-body {
   display: flex;
   flex: 1;
   overflow: hidden;
+}
+
+/* Skip-link: hidden off-screen until it receives focus, then re-enters
+   the viewport at the top-left so keyboard users can jump past the
+   header (WCAG 2.4.1 Bypass Blocks). */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+}
+.skip-link:focus {
+  left: 8px;
+  top: 8px;
+  background: #ffd166;
+  color: #1a1a2e;
+  padding: 8px 16px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 600;
+  outline: 2px solid #1a1a2e;
+  outline-offset: 2px;
 }
 
 .detail-pane {

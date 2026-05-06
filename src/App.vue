@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <a class="skip-link" href="#main-content">{{ t('app.skipToContent') }}</a>
     <header class="app-header">
       <h1>{{ t('app.title') }}</h1>
       <nav class="tabs" :aria-label="t('app.tabs.aria')">
@@ -61,29 +62,34 @@
       </div>
     </header>
 
-    <div v-if="tab === 'graph'" class="app-body">
-      <div class="graph-pane">
-        <Graph
-          :data="graphData"
-          :selected-slug="selectedSlug"
-          :filter-query="searchQuery"
-          @select="onSelect"
-          @path-mode-change="onPathModeChange"
-        />
+    <main id="main-content" tabindex="-1">
+      <div v-if="tab === 'graph'" class="app-body">
+        <div class="graph-pane">
+          <Graph
+            :data="graphData"
+            :selected-slug="selectedSlug"
+            :filter-query="searchQuery"
+            @select="onSelect"
+            @path-mode-change="onPathModeChange"
+          />
+        </div>
+        <aside
+          :class="['detail-pane', { open: panelOpen }]"
+          :aria-label="t('app.detailsAria')"
+        >
+          <div v-if="chunkLoading" class="panel-loading">{{ t('app.loading') }}</div>
+          <ChunkPanel
+            v-else-if="chunk"
+            :chunk="chunk"
+            @navigate="selectedSlug = $event"
+            @close="selectedSlug = null"
+          />
+          <div v-else class="empty-state">{{ t('app.selectNode') }}</div>
+        </aside>
       </div>
-      <div :class="['detail-pane', { open: panelOpen }]">
-        <div v-if="chunkLoading" class="panel-loading">{{ t('app.loading') }}</div>
-        <ChunkPanel
-          v-else-if="chunk"
-          :chunk="chunk"
-          @navigate="selectedSlug = $event"
-          @close="selectedSlug = null"
-        />
-        <div v-else class="empty-state">{{ t('app.selectNode') }}</div>
-      </div>
-    </div>
 
-    <SourcesView v-if="tab === 'sources'" />
+      <SourcesView v-if="tab === 'sources'" />
+    </main>
   </div>
 </template>
 

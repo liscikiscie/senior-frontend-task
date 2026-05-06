@@ -7,6 +7,8 @@
       "aria": "App views"
     },
     "loading": "Loading…",
+    "skipToContent": "Skip to content",
+    "detailsAria": "Details for the selected chunk",
     "selectNode": "Select a chunk to see details",
     "chunksCount": "no chunks | {n} chunk | {n} chunks",
     "linksCount": "no links | {n} link | {n} links",

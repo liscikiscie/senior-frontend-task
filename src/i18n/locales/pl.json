@@ -7,6 +7,8 @@
       "aria": "Widoki aplikacji"
     },
     "loading": "Ładowanie…",
+    "skipToContent": "Przejdź do treści",
+    "detailsAria": "Szczegóły wybranego fragmentu",
     "selectNode": "Wybierz fragment, aby zobaczyć szczegóły",
     "chunksCount": "brak fragmentów | {n} fragment | {n} fragmenty | {n} fragmentów",
     "linksCount": "brak powiązań | {n} powiązanie | {n} powiązania | {n} powiązań",
