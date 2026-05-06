@@ -50,7 +50,11 @@
                   v-for="p in s.parts"
                   :key="p.part_index"
                   :class="['part-row', { selected: isPartSelected(s.source_name, p.part_index) }]"
+                  tabindex="0"
+                  role="button"
+                  :aria-pressed="isPartSelected(s.source_name, p.part_index)"
                   @click="selectPart(s.source_name, p.part_index)"
+                  @keydown="onPartKeydown($event, s.source_name, p.part_index)"
                 >
                   <td class="mono">{{ p.part_index }}</td>
                   <td>{{ p.title }}</td>
@@ -122,6 +126,12 @@ function selectPart(sourceName, partIndex) {
   } else {
     selectedPart.value = { source_name: sourceName, part_index: partIndex }
   }
+}
+
+function onPartKeydown(event, sourceName, partIndex) {
+  if (event.key !== 'Enter' && event.key !== ' ') return
+  event.preventDefault()
+  selectPart(sourceName, partIndex)
 }
 
 watch(selectedPart, async (sp) => {
@@ -228,4 +238,5 @@ watch(selectedPart, async (sp) => {
 .part-row { cursor: pointer; }
 .part-row:hover td { background: #1a2a50; }
 .part-row.selected td { background: #0f3460; }
+.part-row:focus-visible { outline: 2px solid #ffd166; outline-offset: -2px; }
 </style>
