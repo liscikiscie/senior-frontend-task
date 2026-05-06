@@ -56,6 +56,8 @@
   "graph": {
     "pathMode": "Ścieżka",
     "noPath": "Brak ścieżki",
+    "noPathHint": "Spróbuj wybrać inne węzły",
+    "dismissNoPath": "Zamknij komunikat",
     "noMatches": "Brak dopasowań",
     "selectStart": "Wybierz początek",
     "selectEnd": "Wybierz koniec",

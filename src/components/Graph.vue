@@ -4,8 +4,9 @@
       :path-active="pathActive"
       :path-hint="pathHint"
       :path-route-announcement="pathRouteAnnouncement"
-      :path-no-path-found="pathNoPathFound"
+      :path-no-path-found="pathNoPathFound && !noPathDismissed"
       @toggle="onPathToggleClick"
+      @dismiss-no-path="dismissNoPath"
     />
 
     <div
@@ -53,6 +54,12 @@ function isSearchDimmed(node) {
 
 const { t } = useI18n()
 const prefersReducedMotion = useReducedMotion()
+
+// Local "user dismissed the no-path message" flag. Cleared automatically
+// whenever the path state changes so a fresh failed lookup re-triggers
+// the overlay without leaving stale UI behind.
+const noPathDismissed = ref(false)
+function dismissNoPath() { noPathDismissed.value = true }
 
 const {
   active:       pathActive,
@@ -178,7 +185,10 @@ function refreshGraphView() {
 
 watch(() => props.filterQuery, refreshGraphView)
 watch(pathActive,              refreshGraphView)
-watch(pathState,               refreshGraphView)
+watch(pathState,               function onPathStateChange() {
+  noPathDismissed.value = false
+  refreshGraphView()
+})
 watch(prefersReducedMotion,    refreshGraphView)
 
 onMounted(function bindKeydown() {

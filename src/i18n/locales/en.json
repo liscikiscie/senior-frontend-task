@@ -56,6 +56,8 @@
   "graph": {
     "pathMode": "Path",
     "noPath": "No path found",
+    "noPathHint": "Try a different pair of nodes",
+    "dismissNoPath": "Dismiss message",
     "noMatches": "No matches",
     "selectStart": "Pick a start node",
     "selectEnd": "Pick an end node",
