@@ -6,7 +6,13 @@
         <h2>{{ chunk.title }}</h2>
         <p v-if="chunk.summary" class="summary">{{ chunk.summary }}</p>
       </div>
-      <button class="close-btn" :title="t('chunkPanel.close')" @click="emit('close')">&#x2715;</button>
+      <button
+        type="button"
+        class="close-btn"
+        :title="t('chunkPanel.close')"
+        :aria-label="t('chunkPanel.close')"
+        @click="emit('close')"
+      >&#x2715;</button>
     </div>
 
     <div class="panel-body">

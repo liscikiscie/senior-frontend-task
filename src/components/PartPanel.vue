@@ -8,7 +8,13 @@
           {{ part.source_name }} · {{ t('chunkPanel.part', { n: part.part_index }) }}{{ timeRange }}{{ langSuffix }}
         </p>
       </div>
-      <button class="close-btn" :title="t('partPanel.close')" @click="emit('close')">&#x2715;</button>
+      <button
+        type="button"
+        class="close-btn"
+        :title="t('partPanel.close')"
+        :aria-label="t('partPanel.close')"
+        @click="emit('close')"
+      >&#x2715;</button>
     </div>
     <div class="panel-body">
       <div class="markdown-content" v-html="parsedBody" />
