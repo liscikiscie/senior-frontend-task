@@ -53,8 +53,20 @@ Esc owszem wyłączał tryb, ale klik w tło nic nie robił, mimo że to jest ko
 Linkurious, Cytoscape, Gephi, Obsidian, yFiles, Kumu — wszystkie traktują klik w tło canvas jako „emergency exit" zgodnie z Nielsen #3 (User Control and Freedom). 
 Wybrałem hybrydowy wariant zarówno dla Esc jak i bg-click: jeśli coś jest wybrane → czyść, jeśli czysto → wyjdź z trybu. Analogicznie do dwustopniowego Esc w polu wyszukiwania (1× czyści query, 2× zdejmuje fokus). Jeden model mentalny dla obu wejść. Commit `66ecc31`.
 
-Siódmy: `<html lang>` był hardcoded „en" w `index.html:2`, mimo że default locale to PL — screen reader fonologią angielską czytał polski tekst.
-Sync w `setLocale()` (`document.documentElement.lang = next`) + `syncDocumentLang()` wywołany w `main.js` przed mount, żeby SSR-style initial render też trafił we właściwy locale.
+Siódmy to był pełny audit dostępności po zamknięciu specyfikacji. Patrzę na każdy nowy ekran przez Nielsen 10 + WCAG 2.2 AA + konwencje narzędzi grafowych. Wyszło sporo P0/P1 — 12 atomowych commitów na branchu `feat/a11y-p0`, scalone do main przez `--no-ff` (merge `6ebb993`):
+
+- `<html lang>` hardcoded „en" w `index.html:2` mimo default locale PL — screen reader fonologią angielską czytał polski tekst. `setLocale()` aktualizuje `document.documentElement.lang`, `syncDocumentLang()` w `main.js` przed mount dla initial render.
+- skip-link „Przejdź do głównej treści" + landmarki `<main>`/`<aside>` — `Tab` od początku strony pomija header.
+- `aria-current="page"` na aktywnej zakładce + `:focus-visible` ringi (focus tylko przy nawigacji klawiaturą, nie myszą).
+- ARIA disclosure pattern na kartach źródeł (aria-expanded/controls), klawiatura aktywuje wiersze części transkryptu (`tabindex="0"` + Enter/Space + `role="button"`).
+- `aria-label` na przycisku zamknięcia panelu („Zamknij szczegóły fragmentu") — wcześniej tylko `:title`, screen reader czytał literalnie „×".
+- Header controls min 24×24 px (WCAG 2.5.8 — target size), kontrast placeholder w search podniesiony do AA.
+- `prefers-reduced-motion` honorowany w transitions (panel slide, focus rings, force-graph particle speed).
+- No-path overlay zamykalny klikiem (Nielsen #3 — User Control and Freedom) zamiast wisieć aż do nowego węzła.
+- Empty-state overlay przy search bez dopasowań (parallel do „No path found"), wcześniej graf cały dimowany bez komunikatu.
+- Slash-to-focus shortcut (`/` fokusuje search, jak GitHub/Linear/Notion) wyeksponowany jako keycap obok inputa + `searchShortcutHint` w aria-label — wcześniej hidden feature tylko dla power userów.
+- Detail pane + header responsywne na wąskie ekrany.
+- Sr-only announce'r dla rozwiązanej ścieżki BFS — niewidomy słyszy które węzły są na trasie, nie tylko „3 kroki".
 
 Ósmy wyszedł z `npm audit` na czystym repo. Dwa moderate-severity advisory: GHSA-67mh-4wv8-2f99 (esbuild ≤ 0.24.2, CORS bypass w dev serverze) i GHSA-4w7w-66w2-5vf9 / CVE-2026-39365
 (vite ≤ 6.4.1, path traversal w optimized-deps `.map` handler). Oba przez devDependencies, ale recenzent będzie odpalał `npm run dev` jako pierwszy krok, więc nie chciałem mu zostawiać tego do roboty.
