@@ -1,5 +1,6 @@
 {
   "app": {
+    "title": "Graf wiedzy",
     "tabs": {
       "graph": "Graf",
       "sources": "Pliki źródłowe"

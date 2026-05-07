@@ -1,5 +1,6 @@
 {
   "app": {
+    "title": "Wiki Knowledge Graph",
     "tabs": {
       "graph": "Graph",
       "sources": "Source Files"
