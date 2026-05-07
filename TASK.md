@@ -1,167 +1,102 @@
 # TASK.md — proces pracy
 
-## Tło
-
-Trzy zadania z `README.md` (refactor + i18n, BFS najkrótszej ścieżki, wyszukiwanie na żywo) zrealizowałem na `main`, każde osobnym commitem. Po zamknięciu zakresu specyfikacji zrobiłem przegląd jakości — prześledziłem aplikację pod kątem standardów rynkowych narzędzi grafowych, dostępności, bezpieczeństwa zależności, zgodności wizualizacji z algorytmem. Każdy znaleziony obszar wylądował na osobnym branchu, żeby recenzent mógł czytać je niezależnie.
-
-Wokół Claude Code mam własną nakładkę: profile workflow (`analiza`, `arch`, `review`, `ux`, `deploy`, `compliance`, `tests`, `refactor`, `docs`, `security`, `perf`), hooki quality-gate odpalane po każdym commicie i toolchain MCP (Gemini, Perplexity, semantic skills search). Każdy profil ładuje skoncentrowany zestaw skill'i (np. `/workflow review` wciąga `/security` + `/performance` + `/vue` + `/nuxt`) i wymusza explicit decyzje przed każdym commitem. Stąd w repo struktury `plans/` i style commit message'y — to wynik tej automatyzacji, nie ręcznego rytuału. Wzmianka tylko po to, by łatwiej było zrozumieć, czemu commit messages są tak rozbudowane, a każda zmiana cytuje dokładny standard.
-
 ## Narzędzia
 
-Claude Code (Opus 4.7, 1M kontekst) jako wsparcie — pisanie boilerplate'u, generowanie testów, code review pod dyktowaną listą reguł, weryfikacja własnych twierdzeń przez `git diff` / `grep` / `wc` na moją prośbę. Decyzje projektowe (algorytm, UX, scope, kolejność commitów) i akceptacja każdego diffa po mojej stronie — to ja podpisuję się pod ostatecznym wynikiem.
-
-Perplexity (Sonar Pro) wywoływane przez Claude Code do weryfikacji standardów rynkowych narzędzi grafowych (Neo4j Bloom, Linkurious, Cytoscape, Gephi, Obsidian, yFiles, Kumu) i Nielsen / WCAG / WAI-ARIA APG. Każdy odsył do "standardu rynkowego" w treści commitu poparty cytatem z tej weryfikacji.
-
-`npm audit` na każdym branchu, `vitest run` przed każdym commitem, `vite build` jako smoke test po większych zmianach. IntelliJ IDEA do inspekcji kodu, DevTools do runtime checku UI.
+Z AI wykorzystałem Claude Code i stworzoną prze ze mnie platformę wokół Claude Code (profile workflow, zestawy agentów, skill's RAG, hooki quality-gate, kilka MCP serverów). Jest to zaawansowany system multi-agentowy do zarządzania przepływem pracy. Posiada zbudowanę prze ze nmie dużą bazę wiedzy (RAG) wykorzystywaną przez roje agentów nadzorowaną stosowne bramki jakości i bezpieczeństwa. 
+W praktyce oznacza to, że mogłem prowadzić cały proces — od planowania, przez implementację, aż po code review — bez wychodzenia z edytora. Większość procesów była wspierana przez AI, ale ostateczne decyzje i testy pozostawały w moich rękach.
+Tłumaczenia PL-owej terminologii baristycznej i dłuższych bloków markdown puszczałem przez Gemini 3.1 Pro / Flash (przez MCP `gemini-writer`), bo Claude w tłumaczeniach najlepszy nie jest i dryfować w mechaniczne kalki. Edytor IntelliJ IDEA, smoke-testy w Vite dev server + DevTools po każdym commicie.
 
 ## Workflow
 
-Po zamknięciu trzech zadań na `main` puściłem `/workflow analiza` — pełny skan kodu pod kątem rzeczy, których spec nie wymagał ale recenzent mógłby zauważyć: dostępność, kontrast, klawiatura, semantyka, zachowanie pod nietypowymi inputami. Z tego wyszedł raport P0/P1/P2 i kolejność prac. Każdy obszar trafił na osobny branch z `main` zgodnie z `README.md:131` ("Każde zadanie powinno być commitowane osobno"). Branchy nie merguję — chcę, żeby recenzent czytał je niezależnie.
+Zacząłem od planowania. Po sklonowaniu repo i przeczytaniu README wydałem komendę w `workflow analiza` do Claude'a o wygenerowanie sześciu dokumentów planowych do `plans/` — overview plus jeden plan na zadanie. W każdym: kontekst, diagramy Mermaid (state machines, flow, edge case'y), 
+pliki do utworzenia i zmiany, sekcja „Gaps" z tym co świadomie pomijam i dlaczego, na końcu propozycja commit message'a. Te plany nie tylko przyspieszyły kodowanie, ale przy okazji wyłapały kilka rzeczy zanim trafiły do edytora — np. że force-graph mutuje `link.source/target` 
+ze stringów na referencje obiektowe (BFS by się rozsypał na pierwszym uruchomieniu), albo że `ctx.globalAlpha` trzeba resetować po każdym węźle bo inaczej dim wycieka.
 
-| Branch | Commitów | Zakres |
-|---|---:|---|
-| `feat/path-mode-ux` | 1 | Klik w tło canvas i Esc czyszczą wybór w trybie Path (hybrydowo: czyść jeśli coś wybrane, w przeciwnym razie wyjdź — analogicznie do dwustopniowego Esc w polu wyszukiwania). |
-| `feat/a11y-p0` | 15 | WCAG 2.2 P0 + większość P1: kontrast `#666`/`#555` → AA, sync `<html lang>` z locale, klawiaturowa aktywacja wierszy w `SourcesView`, `aria-label` na close-btn, ARIA disclosure na kartach źródeł, `aria-current` + focus-visible na zakładkach, target size ≥ 28 px, skip-link + landmarki `<main>`/`<aside>`, `prefers-reduced-motion`, responsywność (panel collapse <1280 px, overlay <768 px), empty-state dla pustego search'a, dismissable no-path toast, hint `/` shortcut, sr-only announce'r ścieżki BFS. |
-| `feat/a11y-graph-alternative` | 1 | Lista węzłów nawigowalna klawiaturą + `role="application"` na canvas, alternatywa dla osób korzystających ze screen readera. Domyka WCAG 1.1.1 / 2.1.1 / 4.1.2 dla głównego widoku. |
-| `feat/path-particle-direction` | 1 | Cząsteczki na linkach ścieżki płyną zgodnie z BFS (start → end), nawet gdy oryginalna krawędź była zadeklarowana odwrotnie. |
-| `chore/security-and-bench` | 2 | (a) `vite ^5.4.0 → ^7.3.2` i `@vitejs/plugin-vue ^5.1.0 → ^6.0.6` — patch GHSA-4w7w-66w2-5vf9 i GHSA-67mh-4wv8-2f99. (b) `bench/bfs.bench.js` — empiryczna weryfikacja O(V+E). |
-| `fix/i18n-app-title-key` | 1 | Pre-existing bug: `App.vue:4` woła `t('app.title')`, klucz nie istniał w żadnym locale → header renderował literal "app.title". |
-| `docs/task-md` | 1 | Niniejszy plik. |
+Sesję prowadziłem przez kilka profili workflow w mojej platformie na Claude Code, każdy z innym zestawem agentów, skill's i hooków:
 
-## Konkretne znaleziska i decyzje
+- `/workflow analiza` na start — skanowanie kodu, diagnoza 3 zadań, generacja planów `00-overview` … `05-live-search`. Sam ten workflow dzieli się na 6 trybów (bug, feature, technical, generic, business, market) które się uruchamiają reagując na semantykę lub/i kontekst komendy.
+- `/workflow arch` przy realizowaniu planów —  pisanie kodu, testów składanie propozycji architektonicznych. Praca wpisywania całego kodu odbywa się też przez lokalne LLM - jeszcze w fazie testów.
+- Pod koniec debug-loop czyli `/workflow review` & `/workflow arch` & `/workflow analiza`. Review znajdował konkretne bolączki (race condition w async watcherach, ResizeObserver w zagnieżdżonym `onUnmounted`, `<h1>Wiki Knowledge Graph</h1>` jako literalne złamanie Z1c, brak `aria-live` 
+- na liczniku dopasowań, BFS z `queue.shift()` jako O(V²) zamiast O(V+E)), arch decydował co naprawiać a co udokumentować jako świadomy trade-off.
 
-### Algorytm BFS — ścieżka idzie pod prąd strzałek
+Każde plan-driven zadanie poszło w osobnym branchu z `--no-ff` mergem do main (Z1a, Z1b, Z1c, Z2, Z3 + iteracje 06/07 = vitest, JSDoc — każda z plan commitem przed implementacją).
+Drobne poprawki zostały (P2 a11y/ux, full translation, TASK.md, path mode polish, post-review polish). Conventional Commits wszędzie.
 
-Klikając po grafie zauważyłem, że niektóre wyznaczone ścieżki płyną wizualnie wbrew strzałkom na krawędziach. Pierwszy odruch: bug. Po sprawdzeniu — algorytm jest poprawny, jest to konsekwencja `README.md:90` ("BFS przeszukuje graf jako **nieskierowany**"). `buildAdjacency` w `src/utils/graph.js:5-17` świadomie dodaje obie strony krawędzi. Konflikt jest między danymi (krawędź skierowana — semantyka relacji "feeds", "produces") a wizualizacją (force-graph przypina cząsteczki do oryginalnego `source → target`).
+Pojawiło się kilka nieoczywistych problemów:
 
-Trzy opcje: A — zostawić, zgodne ze spec; B — BFS skierowany, łamie spec; C — zostawić nieskierowany, ale odwrócić cząsteczki na linkach ścieżki. Wybrałem **C**. Implementacja: `getLinkParticleSpeed(link)` w `Graph.vue` zwraca ujemną prędkość, gdy `link.target` jest wcześniej na ścieżce niż `link.source`; force-graph honoruje znak i odwraca strumień. Algorytm dalej O(V+E), tylko renderer dostaje spójną wizualizację.
+Z1b — `TYPE_LABELS` w `types.js` jako mapa kluczy i18n (`process_stage → 'types.process_stage'`), nie hardkodowane stringi.
+Po wdrożeniu Z1c właściwe etykiety żyją w `locales/{en,pl}.json` — `TYPE_LABELS` w types.js trzyma tylko ścieżki do kluczy.
+Plus: literalna zgodność ze spec (obie mapy obok siebie w utils/types.js), single source of truth na poziomie kluczy (zmiana namespace'u i18n = edycja jednego pliku), refaktor-safety (zapomnienie dodać nowy typ daje błąd, nie cichy fallback do klucza-stringa).
+`types.js` eksportuje `TYPE_COLORS`, `TYPE_LABELS`, `DEFAULT_COLOR`. `ChunkPanel.vue`: `t(TYPE_LABELS[chunk.type])` zamiast string-concat.
 
-### Zachowanie w trybie Path — co ma robić Esc i klik w tło
+Dane z `mock.js` (tytuły węzłów, podsumowania, etykiety krawędzi, body markdown) nie były tłumaczone. Spec mówił „nie zmieniaj mock.js" więc nie ruszałem — ale jednocześnie chodzi o aplikację dwujęzyczną, więc treść też powinna być dwujęzyczna. 
+Rozwiązanie: warstwa overlay w locale (`data.nodeTitles.${slug}`, `data.linkLabels.${label}` itd.) z `te()`-owym fallbackiem na oryginał. Mock.js nietknięty, treść przetłumaczona, README spełnione literalnie i w duchu.
 
-Po implementacji BFS dotarło do mnie, że nie ma wyjścia awaryjnego — w trybie Path Esc jest jedynym sposobem ucieczki, a klik w tło canvas nic nie robi. Zacząłem od trzech wariantów Esc (A: wyjdź, B: czyść wybór, C: hybrydowo). Po analizie i weryfikacji u Perplexity konwencji w Neo4j Bloom, Linkurious, Cytoscape, Gephi, Obsidian, yFiles i Kumu — ~90% narzędzi traktuje klik w tło jako "emergency exit" zgodnie z Nielsen #3 (User Control and Freedom). Jedyne kontrofszanse to przypadki kosztownych obliczeń (sekundowe pathfindingi po stronie serwera) — u nas BFS w mikrosekundach (potwierdzone benchmarkiem), więc obie interakcje (Esc i bg-click) są bezpieczne.
+Drugi: po wystygnięciu symulacji force-graph zatrzymuje pętlę renderu. Zmiana języka aktualizowała tooltipy (bo te są wywoływane on-hover), ale tekst rysowany w `nodeCanvasObject` zostawał zamrożony w starym locale aż do najbliższej interakcji z grafem.
+Fix prosty — watcher na `locale` + `fg.graphData(fg.graphData())` — ale logika nieoczywista, łatwo było to przeoczyć w smoke-teście „klik klik, działa".
 
-Wybrałem hybrydowy wariant C dla obu — analogiczny do dwustopniowego Esc w polu wyszukiwania (1× czyści, 2× zdejmuje fokus). To samo zachowanie dla obu wejść daje jeden model mentalny: "klik w tło = czyść", "Esc = czyść lub wyjdź".
+Trzeci, dokładnie tej samej rodziny: po pierwszym commicie BFS feature działał zgodnie ze spec'em, ale klikanie po grafie wyłapało pięć drobnych UX-ów których plan nie przewidział. 
+Trzeci klik po wyznaczonej ścieżce nie tworzył nowej — stary stan zostawał (state machine nie miała przejścia ShowPath → WaitStart na klik nowego węzła). Panel detali z poprzedniego klika świecił się pierścieniem nawet po włączeniu trybu Path. Krawędzie dimowane od włączenia trybu, węzły dopiero od wyboru startu — niespójny próg. Search ring przebijał się przez tryb Path, mimo że `path > search` było ustalone w planie. Canvas zamrażał się na zmianach `pathStart`/`pathEnd` dokładnie tym samym mechanizmem co przy zmianie locale. Wszystko poszło jednym commitem `fix(graph): align path mode with spec` — to jest dokładnie ta sama klasa błędu co lokalowa: spec mówi *co* ma się stać, ale dopiero interakcja na żywo pokazuje *jak*.
 
-### WCAG 2.2 — pełny przegląd
+Czwarty pojawił się dopiero w multi-agent review po wszystkich commitach. `watch(selectedSlug, async (slug) => { await setTimeout(80ms); chunk.value = getChunk(slug) })` 
+ma race condition: szybki klik A → klik B w 50ms → A nadpisuje B kiedy ten pierwszy timeout się rozwiąże. Tu nieszkodliwe (mock data, 80ms symulacji), ale wzorzec niepoprawny. 
+Fix: token `requestId` inkrementowany na początku watchera, sprawdzany po `await` — race conditions w async watcherach.
 
-Jako frontend developer z doświadczeniem mam nawyk patrzenia na każdy nowy ekran przez pryzmat dostępności. Po zamknięciu specyfikacji puściłem audit całego UI pod Nielsen 10 + WCAG 2.2 AA + konwencje narzędzi grafowych. Lista znalezisk uporządkowana P0/P1/P2 (P0 = niezgodne z WCAG AA, P1 = łamie konwencje rynkowe, P2 = polish):
+Piąty wyłapałem klikając po grafie z włączonym trybem Path. Niektóre wyznaczone ścieżki wizualnie płynęły wbrew strzałkom na krawędziach — pierwszy odruch był taki, że BFS się rozjeżdża.
+Po sprawdzeniu okazało się że algorytm jest poprawny, robi dokładnie to co spec mówi (`README.md:90`: „BFS przeszukuje graf jako **nieskierowany**"), `buildAdjacency` świadomie dodaje obie strony krawędzi.
+Konflikt jest między danymi (krawędź skierowana, semantyka relacji „feeds", „produces") a force-graph, który przypina cząsteczki do oryginalnego `source → target`. 
+Trzy warianty na stole: zostawić, przejść na BFS skierowany (łamałby spec, niektóre pary tracą połączenie), albo zostawić nieskierowany i odwrócić cząsteczki na linkach ścieżki tak, żeby leciały start → end. 
+Wybrałem trzecie — `getLinkParticleSpeed(link)`, gdy `link.target` jest wcześniej na ścieżce niż `link.source`, force-graph honoruje znak. Algorytm zostaje O(V+E), wizualizacja staje się spójna z trasą. Commit `ccb779c`.
 
-P0 zaadresowane na `feat/a11y-p0`:
-- `<html lang>` był hardcoded "en" w `index.html:2`, mimo że default locale to PL. Screen reader fonologią angielską czytał polski tekst. Sync w `setLocale()` + `main.js`.
-- Kontrast `#666` na `#16213e` ≈ 2.8:1, `#555` na `#1a1a2e` ≈ 2.4:1 — fail AA dla tekstu normalnego (4.5:1). Zmiana na `#9aa4b3` ≈ 6.3:1.
-- Wiersze tabeli części w `SourcesView` miały `cursor: pointer` ale nie były focusable. `tabindex="0"` + `role="button"` + `aria-pressed` + Enter/Space handler.
-- Canvas force-graph nie miał `role` ani `aria-label` — screen reader pomijał cały widok grafu. Dodałem `role="application"` + `aria-label` z licznikiem węzłów/krawędzi i wskazaniem na alternatywną listę.
-- Brak alternatywy klawiaturowej dla nawigacji po grafie. Stworzyłem `GraphNodeList.vue` — `<nav><ul><button>` mirrorujący canvas, filtrowany tym samym `matchedSlugs()` co graf, otwierany przyciskiem `☰` w toolbarze.
+Szósty był z tej samej kategorii „działa zgodnie ze spec'em ale UX kuleje". W trybie Path nie było wyjścia awaryjnego — 
+Esc owszem wyłączał tryb, ale klik w tło nic nie robił, mimo że to jest konwencja używana przez 90% narzędzi rynkowych. Zanim cokolwiek pisałem, puściłem przez Perplexity research po Neo4j Bloom, 
+Linkurious, Cytoscape, Gephi, Obsidian, yFiles, Kumu — wszystkie traktują klik w tło canvas jako „emergency exit" zgodnie z Nielsen #3 (User Control and Freedom). 
+Wybrałem hybrydowy wariant zarówno dla Esc jak i bg-click: jeśli coś jest wybrane → czyść, jeśli czysto → wyjdź z trybu. Analogicznie do dwustopniowego Esc w polu wyszukiwania (1× czyści query, 2× zdejmuje fokus). Jeden model mentalny dla obu wejść. Commit `66ecc31`.
 
-P1 (większość zaadresowana):
-- Brak skip-link i landmarków → dodane `<main>`, `<aside>`, skip-link.
-- Brak respektowania `prefers-reduced-motion` → composable `useReducedMotion` + globalne wyłączenie tranzycji + wyłączenie cząsteczek force-graph.
-- Brak responsywności (panel locked 800 px, na mobile zjadał graf) → media queries w `style.css`, panel staje się overlay <768 px.
-- No-path overlay był blokujący, niedismissable, w centrum canvasu → przeniesiony jako toast pod toolbarem z przyciskiem zamknięcia i konstruktywną wskazówką "spróbuj innych węzłów".
-- Empty search bez czytelnego komunikatu → centered overlay "Brak dopasowań dla 'X'" z przyciskiem Clear.
-- Skrót `/` nieujawniony → `<kbd>/</kbd>` jako badge w polu wyszukiwania, znika gdy user wpisze cokolwiek.
-- Touch targets <24 px (tabs, lang-btn, search-clear) → `min-height: 28px`.
-- ARIA disclosure pattern na kartach źródłowych (`aria-expanded` + `aria-controls`).
+Siódmy: `<html lang>` był hardcoded „en" w `index.html:2`, mimo że default locale to PL — screen reader fonologią angielską czytał polski tekst.
+Sync w `setLocale()` (`document.documentElement.lang = next`) + `syncDocumentLang()` wywołany w `main.js` przed mount, żeby SSR-style initial render też trafił we właściwy locale.
 
-### Empiryczna weryfikacja O(V+E)
+Ósmy wyszedł z `npm audit` na czystym repo. Dwa moderate-severity advisory: GHSA-67mh-4wv8-2f99 (esbuild ≤ 0.24.2, CORS bypass w dev serverze) i GHSA-4w7w-66w2-5vf9 / CVE-2026-39365
+(vite ≤ 6.4.1, path traversal w optimized-deps `.map` handler). Oba przez devDependencies, ale recenzent będzie odpalał `npm run dev` jako pierwszy krok, więc nie chciałem mu zostawiać tego do roboty.
+Bump do `vite ^7` (najmniejszy major, który zamyka oba — fix gated > 6.4.1) i `@vitejs/plugin-vue ^6` (peer compat). `vitest 4.1.5` zostało, już deklaruje `peer: vite ^6 || ^7 || ^8`.
+Po zmianie: `npm audit` → 0 vulnerabilities, `vite build` → 1.63 s, 27 testów zielono.
 
-Komentarz w `src/utils/graph.js:25-44` deklaruje O(V+E) — bo BFS używa indexu jako pointera dequeue zamiast `Array.shift()` (który by zdegradował to do O(V²)). Zaufanie ograniczone, więc napisałem benchmark `bench/bfs.bench.js`. Generuje rzadkie grafy (E ≈ 2V) na rozmiarach 16 → 20 000, warm-up JIT, 2 000 wywołań na rozmiar.
+Dziewiąty wyszedł w prostym runtime checku — nagłówek pokazywał literal „app.title" zamiast nazwy aplikacji.
+Odsyłka istnieje w `App.vue:4` (i18n landing), ale klucz nigdy nie został dodany do `pl.json` ani `en.json`.
+Vue-i18n v9 default missing-handler zwraca samą ścieżkę klucza jako string. AI tego w pełnym holistycznym review nie wyłapała — nie odpaliła aplikacji.
+Smoke test w przeglądarce zostaje obowiązkiem człowieka. Naprawione wartościami z `index.html:6` („Wiki Knowledge Graph" / „Graf wiedzy") — oneliner, ale przypomnienie że review oparty wyłącznie na czytaniu kodu nie zastąpi runtime'u.
 
-```
-     V        E      V+E   per_run(µs)   per_(V+E)(ns)
-    16       31       47          4.07            86.53
-    50       99      149          6.55            43.94
-   200      399      599         31.91            53.28
-  1000     1999     2999        183.32            61.13
-  5000     9999    14999       1308.98            87.27
- 20000    39999    59999       8880.03           148.00
-```
+## Nowe zależności
 
-Per-(V+E) drgnęło 1.7× przy 1 250× wzroście V — sygnatura O(V+E) z minoryzowanymi efektami cache'u L2/L3 na dużych grafach. Kod O(V²) dałby drift ~1 250× w ostatniej kolumnie. Twierdzenie potwierdzone empirycznie. Praktyczny upshot: BFS na obecnych 16 węzłach kończy się w ~4 µs; nawet stress test 20 000 węzłów schodzi pod 9 ms, dobrze poniżej budżetu klatki.
+| Pakiet | Powód |
+|---|---|
+| `vue-i18n@^9.14.5` | Wprost wymagana przez Z1c. Composition API (`legacy: false`), customowe `pluralRules` per locale dla polskich form (1 / 2-4 / 5+). Brak realnych alternatyw. |
+| `vitest@^4` (devDependencies) | Test runner dla BFS suite, search filter i state machine trybu Path. Reużywa istniejący `vite.config.js`, ESM-native (projekt jest `type: module`), zerowa konfiguracja. Alternatywą był jest (większy bundle, ESM wymaga babel) lub `node:test`. |
 
-### Vulnerability w toolchainie
-
-Po pierwszym przeglądzie security uruchomiłem `npm audit` na czystym repo. Dwa moderate-severity advisory:
-- GHSA-67mh-4wv8-2f99 — `esbuild ≤ 0.24.2` (CORS bypass w dev serverze)
-- GHSA-4w7w-66w2-5vf9 / CVE-2026-39365 — `vite ≤ 6.4.1` (path traversal w optimized-deps `.map` handler)
-
-Oba leciały tylko przez devDependencies (dev server, nie production bundle), ale i tak wykonują się przy `npm run dev` — co recenzent zrobi w pierwszym kroku. Bump do `vite ^7.3.2` (najmniejszy major który zamyka oba CVE) i `@vitejs/plugin-vue ^6.0.6` (peer compat). `vitest 4.1.5` zostało — już deklarował `peer: vite ^6 || ^7 || ^8`. Po zmianie: `npm audit` → 0 vulnerabilities, `vite build` → 1.32 s, `vitest run` → 27 / 27 zielono.
-
-### Bug `app.title` — pre-existing, runtime-only
-
-Podczas runtime check w przeglądarce zauważyłem, że nagłówek pokazuje literal "app.title" zamiast nazwy aplikacji. Odsyłka istnieje w `App.vue:4` od commitu `d64b4c1` (i18n landing), ale klucz nigdy nie został dodany do plików locale. Vue-i18n v9 default missing-handler zwraca samą ścieżkę klucza jako string, więc renderowało się literalnie "app.title". Poprawka jednolinijkowa, ale przypomnienie: code review oparty wyłącznie na czytaniu kodu nie wyłapie błędów runtime. Naprawione na `fix/i18n-app-title-key` z wartościami z `index.html:6` ("Wiki Knowledge Graph" / "Graf wiedzy").
-
-### Podział kodu na mniejsze chunki
-
-`Graph.vue` po implementacji BFS i path mode urósł do ~200 LOC z trzema składowymi: bindowanie force-graph, tryb Path, pop-up. Wyodrębniłem composables — `usePathMode` (state machine + BFS), `useGraphCamera` (fly-to + fit-to-screen), `useForceGraph` (mount + resize observer), `useReducedMotion`. Każdy <50 LOC, testowalny niezależnie. To pozwoliło dodawać kolejne feature'y (path particle direction, node list, screen reader announce) bez puchnięcia komponentu nadrzędnego — wszystko nowe szło do composable i wąskiego API.
-
-## Co świadomie pominięte
-
-TypeScript — projekt zaczął w JS i migracja byłaby scope creepem. JSDoc na utils zamiast TS daje IntelliSense bez `jsconfig.json` i bez wciągania reszty projektu w pół-typowanie.
-
-Pełny ARIA tablist pattern dla 2 zakładek — overkill, `aria-current="page"` + zwykłe button semantics wystarczają. Przy 5+ zakładkach zmieniłbym decyzję.
-
-Lazy-load locale plików — 3 KB per locale, zysk marginalny przy SPA.
-
-Camera fly-to nie respektuje `prefers-reduced-motion` — to nie jest free-running animacja, tylko reakcja na klik (krótki tween). Stripping dawałoby nagłe skoki kamery; auditor mógłby flagować, ale UX w drugą stronę gorszy. Zostaje na liście P2 follow-up.
-
-Tu nie chodzi o to, że tych rzeczy nie znam albo bym ich nie zrobił w produkcji. W zadaniu rekrutacyjnym dodawanie ich tylko zwiększa diff bez zwiększenia wartości tego, co recenzent ma ocenić.
-
-## Współpraca z AI — co realnie zadziałało
-
-Tempo. Boilerplate (composable signatures, ARIA atrybuty per pattern, conventional commit messages, tłumaczenia kluczy locale) wyleciał w ułamku czasu, w jakim sam bym to napisał — i mogłem skupić się na decyzjach projektowych.
-
-Co nie zadziałało bez mojej interwencji:
-- Pełny code review oparty na pamięci, nie na `git diff` — dopiero "*sprawdź jeszcze raz*" wymusiło twardą weryfikację. Dotąd wyszły niedbałe liczby ("22 plików w `src/`" → faktycznie 30, "1149 LOC w UI" zacytowane z innego brancha).
-- Skupienie wyłącznie na source code w przeglądzie security — `npm audit` się nie pojawił, dopóki nie wskazałem palcem. Lekcja: AI patrzy w to, co prosisz, nie domyśli się że trzeba też skanować dependencies.
-- Bug `app.title` — ten wyłapałem ja w runtime, AI go w pełnym review nie wyłapała, bo nie odpaliła aplikacji. Smoke test w przeglądarce zostaje obowiązkiem człowieka.
-- Tendencja do robienia więcej niż prosiłem — przy "B czy C?" zaczynała implementować od razu. Trzeba było wprost hamować "tylko C, na osobnym branchu".
-
-## Wybrane prompty
-
-Przegląd algorytmu po obserwacji wizualnej:
-
-> "moim zdaniem algorytm błędnie wyszukuje ścieżki bo widzę że po wyznaczeniu trasy trasa nie płynie zgodnie ze strzałkami — zrób analizę"
-
-Weryfikacja standardów rynkowych:
-
-> "kliknięcie poza wyznaczoną path powinno wyłączać wyznaczoną path — sprawdź czy nie jest to zabronione i jakie są standardy UI na świecie/rynku"
-
-Code review:
-
-> "wszystkie branche, cały kod aplikacji" (przy `/workflow review`)
-
-Empiryczna weryfikacja:
-
-> "uruchom benchmark — performance claims (BFS O(V+E)) — opieram się na inspekcji kodu, nie odpaliłem benchmarka"
-
-Twarda weryfikacja:
-
-> "jesteś pewien że to wszystko to prawda, sprawdź jeszcze raz"
-
-Rozliczenie z otwartych wątków:
-
-> "coś nie zadziałało i jest niedokończone?!"
-
-## Zmiany wersji bibliotek
-
-Nie dodałem żadnej nowej zależności runtime. Lista zmian w `devDependencies`:
+Plus version bumps wymuszone przez `npm audit`:
 
 | Pakiet | Z | Na | Powód |
 |---|---|---|---|
-| `vite` | `^5.4.0` | `^7.3.2` | Patch GHSA-4w7w-66w2-5vf9 / CVE-2026-39365. Najmniejszy major, który zamyka CVE w `<= 6.4.1`. |
-| `@vitejs/plugin-vue` | `^5.1.0` | `^6.0.6` | Wymóg peer dla vite 7. |
+| `vite` | `^5.4.0` | `^7` | Patch GHSA-4w7w-66w2-5vf9 / CVE-2026-39365 (path traversal w optimized-deps `.map`). Najmniejszy major, który zamyka CVE w `<= 6.4.1`. |
+| `@vitejs/plugin-vue` | `^5.1.0` | `^6` | Wymóg peer dla vite 7. |
 | `esbuild` (transitive) | `≤ 0.24.2` | `≥ 0.25` | GHSA-67mh-4wv8-2f99 — pociągnięty przez vite 7. |
 
-`vue 3.4.0`, `vue-i18n 9.14.5`, `force-graph 1.43.5`, `marked 13.0.0`, `vitest 4.1.5` — bez zmian. Wersje runtime utrzymane z oryginalnego `package.json`, żeby nie wprowadzać niepotrzebnych breaking changes.
+## Co świadomie zostało pominięte
 
-## Reprodukcja wyników
+TypeScript — projekt zaczął w JS i migracja by była scope creepem. JSDoc na utils zamiast TS daje IntelliSense bez `jsconfig.json`. 
+Debounce na search — graf ma 16 węzłów, szybkie filtrowanie. Fuse.js — `String.includes` wystarcza. Lazy-load locale — 3 KB per locale, korzyść marginalna.
 
-```bash
-# Środowisko: Node 22.22.2 (vite 7 wymaga ≥ 20)
-npm install
-npm test                  # 27 / 29 testów (zależnie od brancha)
-npm run build             # vite 7.3.2, ~1.3 s
-node bench/bfs.bench.js   # benchmark BFS, ~3 s
-npm audit                 # 0 vulnerabilities (po `chore/security-and-bench`)
-```
+Przykłady kilku promtów których użyłem:
+
+> „Zrób analizę projektu — stack, stan startowy, diagnoza 3 zadań z ryzykami, edge case'ami, kolejnością commitów. Każde zadanie z osobnym planem realizacji w `plans/`. Plany mają zawierać Mermaid diagrams dla logiki i edge case'ów. Wszystko co świadomie pomijam — wypisane jako Gaps z uzasadnieniem."
+
+Tłumaczenia do Gemini Pro (skrót, full prompt miał glosariusz):
+
+> „Przetłumacz na polski. Zachowaj DOKŁADNIE strukturę JSON, klucze, \\n, markdown (## ### **bold** | tabele | listy | > blockquoty), liczby, jednostki (°C, bar, %, s, ms, ppm, mL, g). Polska terminologia baristyczna: extraction→ekstrakcja, brewing→parzenie, puck→tabletka kawy, filter basket→sitko filtra, portafilter→kolba, group head→grupa parzenia. Inline odnośniki w **bold** kierują do innych węzłów grafu — przetłumacz spójnie z tytułami. Zwróć WYŁĄCZNIE czysty JSON, bez markdown fences."
+
+Locale redraw fix — dosłownie tyle:
+
+> „Przy zmianie języka trzeba rerenderować graf"
+
+Wystarczyło. Claude rozpoznał problem, zaproponował watch jako bezruchowy redraw, i przy okazji wykrył że jeden z istniejących watcherów ma callback parameter `d` shadowujący helper `d` z `useDataI18n()` w setup scope.
+
