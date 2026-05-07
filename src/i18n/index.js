@@ -59,4 +59,9 @@ export function setLocale(next) {
   if (!SUPPORTED_LOCALES.includes(next)) return
   i18n.global.locale.value = next
   if (typeof localStorage !== 'undefined') localStorage.setItem(STORAGE_KEY, next)
+  if (typeof document !== 'undefined') document.documentElement.lang = next
+}
+
+export function syncDocumentLang() {
+  if (typeof document !== 'undefined') document.documentElement.lang = i18n.global.locale.value
 }
