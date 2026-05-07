@@ -2,7 +2,7 @@
   <div class="chunk-panel">
     <div class="panel-header">
       <div class="panel-title">
-        <span :class="`type-badge type-${chunk.type}`">{{ t(`types.${chunk.type}`) }}</span>
+        <span :class="`type-badge type-${chunk.type}`">{{ t(TYPE_LABELS[chunk.type]) }}</span>
         <h2>{{ chunk.title }}</h2>
         <p v-if="chunk.summary" class="summary">{{ chunk.summary }}</p>
       </div>
@@ -55,6 +55,7 @@ import { computed } from 'vue'
 import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
 import { formatTimeRange } from '../utils/format.js'
+import { TYPE_LABELS } from '../utils/types.js'
 
 const props = defineProps({
   chunk: { type: Object, required: true },
