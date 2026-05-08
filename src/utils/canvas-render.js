@@ -13,10 +13,18 @@ export function drawHighlightRing(ctx, node, radius, strokeColor, lineWidth) {
   ctx.stroke()
 }
 
+let _labelScale = null
+let _labelFontSize = 0
+let _labelFontStr = ''
+
 export function drawNodeLabel(ctx, node, globalScale, radius) {
-  const fontSize = Math.min(12 / globalScale, 3)
-  ctx.font      = `${fontSize}px Sans-Serif`
+  if (globalScale !== _labelScale) {
+    _labelScale    = globalScale
+    _labelFontSize = Math.min(12 / globalScale, 3)
+    _labelFontStr  = `${_labelFontSize}px Sans-Serif`
+  }
+  ctx.font      = _labelFontStr
   ctx.fillStyle = 'rgba(220,220,220,0.85)'
   ctx.textAlign = 'center'
-  ctx.fillText(node.title, node.x, node.y + radius + fontSize + 1)
+  ctx.fillText(node.title, node.x, node.y + radius + _labelFontSize + 1)
 }

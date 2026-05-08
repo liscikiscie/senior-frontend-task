@@ -25,6 +25,7 @@
 <script setup>
 import { computed } from 'vue'
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import { useI18n } from 'vue-i18n'
 import { formatTimeRange } from '../utils/format.js'
 
@@ -37,11 +38,7 @@ const { t } = useI18n()
 
 const timeRange  = computed(() => formatTimeRange(props.part.start_seconds, props.part.end_seconds))
 const langSuffix = computed(() => props.part.language ? ` · ${props.part.language}` : '')
-// `marked` does NOT sanitize HTML — we render its output via v-html. Safe
-// today because body_markdown comes from the static mock dataset (T3, no
-// user input). If this ever consumes server/CMS content, plug in DOMPurify
-// (or marked's `sanitizer` hook) before mounting it back onto the DOM.
-const parsedBody = computed(() => marked.parse(props.part.body_markdown || ''))
+const parsedBody = computed(() => DOMPurify.sanitize(marked.parse(props.part.body_markdown || '')))
 </script>
 
 <style src="./chunk-panel.css" scoped></style>

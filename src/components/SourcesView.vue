@@ -11,7 +11,7 @@
             class="source-card-header"
             :aria-label="t('sourcesView.toggleDetails')"
             :aria-expanded="!!expanded[s.source_name]"
-            :aria-controls="`source-body-${s.source_name}`"
+            :aria-controls="`source-body-${toId(s.source_name)}`"
             @click="toggle(s.source_name)"
           >
             <div class="source-card-title">
@@ -27,7 +27,7 @@
 
           <div
             v-if="expanded[s.source_name]"
-            :id="`source-body-${s.source_name}`"
+            :id="`source-body-${toId(s.source_name)}`"
             class="source-card-body"
           >
             <div class="source-meta-grid">
@@ -94,6 +94,7 @@ import { useI18n } from 'vue-i18n'
 import { translatedSources, translatedPart } from '../data/translated.js'
 import PartPanel from './PartPanel.vue'
 import { fmtTime } from '../utils/format.js'
+import { delay } from '../utils/time.js'
 
 const { t, locale } = useI18n()
 
@@ -141,12 +142,24 @@ function onPartKeydown(event, sourceName, partIndex) {
   selectPart(sourceName, partIndex)
 }
 
-watch(selectedPart, async (sp) => {
+function toId(name) {
+  return name.replace(/\W+/g, '-').toLowerCase()
+}
+
+let partLoadRequestId = 0
+watch(selectedPart, async function loadPartData(sp) {
+  const requestId = ++partLoadRequestId
   if (!sp) { partKeyRef.value = null; return }
   partLoading.value = true
-  await new Promise(r => setTimeout(r, 80))
-  partKeyRef.value = sp
-  partLoading.value = false
+  try {
+    await delay(80)
+    if (requestId !== partLoadRequestId) return
+    partKeyRef.value = sp
+    partLoading.value = false
+  } catch (e) {
+    if (requestId === partLoadRequestId) partLoading.value = false
+    console.error('part load error', e)
+  }
 })
 </script>
 

@@ -13,13 +13,18 @@ export function useGraphCamera(fgSource, containerSource) {
     return toValue(containerSource)
   }
 
+  let _nodeMapRef = null
+  let _nodeMap = new Map()
+
   function findNodeBySlug(slug) {
     const fg = getFg()
     if (!fg) return null
-    for (const node of fg.graphData().nodes) {
-      if (node.slug === slug) return node
+    const nodes = fg.graphData().nodes
+    if (nodes !== _nodeMapRef) {
+      _nodeMapRef = nodes
+      _nodeMap = new Map(nodes.map(function(n) { return [n.slug, n] }))
     }
-    return null
+    return _nodeMap.get(slug) ?? null
   }
 
   function getVisibleOffset() {

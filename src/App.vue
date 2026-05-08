@@ -112,6 +112,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { translatedGraphData, translatedChunk } from './data/translated.js'
 import { matchedSlugs } from './utils/search.js'
+import { delay } from './utils/time.js'
 import { SUPPORTED_LOCALES, setLocale } from './i18n/index.js'
 import Graph from './components/Graph.vue'
 import ChunkPanel from './components/ChunkPanel.vue'
@@ -196,12 +197,6 @@ function schedulePanelOpen() {
   }, PANEL_OPEN_DELAY_MS)
 }
 
-function delay(ms) {
-  return new Promise(function scheduleResolve(resolve) {
-    setTimeout(resolve, ms)
-  })
-}
-
 // Token-guarded async watcher: a fast A → B click (within CHUNK_LOAD_DELAY_MS)
 // would otherwise let A's awaited continuation overwrite B's result. Each
 // invocation captures its own requestId; only the latest survives the await.
@@ -228,6 +223,8 @@ onMounted(function bindShortcuts() {
 })
 
 onUnmounted(function unbindShortcuts() {
+  cancelPanelOpenTimer()
+  chunkLoadRequestId++
   window.removeEventListener('keydown', onWindowKeydown)
 })
 </script>
