@@ -2,9 +2,11 @@
 
 ## Narzędzia
 
-Z AI wykorzystałem Claude Code i stworzoną prze ze mnie platformę wokół Claude Code (profile workflow, zestawy agentów, skill's RAG, hooki quality-gate, kilka MCP serverów). Jest to zaawansowany system multi-agentowy do zarządzania przepływem pracy. Posiada zbudowanę prze ze nmie dużą bazę wiedzy (RAG) wykorzystywaną przez roje agentów nadzorowaną stosowne bramki jakości i bezpieczeństwa. 
-W praktyce oznacza to, że mogłem prowadzić cały proces — od planowania, przez implementację, aż po code review — bez wychodzenia z edytora. Większość procesów była wspierana przez AI, ale ostateczne decyzje i testy pozostawały w moich rękach.
-Tłumaczenia PL-owej terminologii baristycznej i dłuższych bloków markdown puszczałem przez Gemini 3.1 Pro / Flash (przez MCP `gemini-writer`), bo Claude w tłumaczeniach najlepszy nie jest i dryfować w mechaniczne kalki. Edytor IntelliJ IDEA, smoke-testy w Vite dev server + DevTools po każdym commicie.
+Z AI wykorzystałem Claude Code i zbudowaną przeze mnie platformę wokół niego: profile workflow, roje agentów, baza wiedzy RAG, hooki quality-gate, kilka MCP serverów (w tym lokalny Gemini i lokalny LLM przez LM Studio). Dzięki temu cały cykl — plan → implementacja → code review — przebiegał w jednym środowisku bez wychodzenia z edytora.
+Tłumaczenia PL-owej terminologii baristycznej puszczałem przez Gemini 2.5 Pro (MCP `gemini-writer`) z własnym glosariuszem, bo Claude dryfuje w mechaniczne kalki. Edytor IntelliJ IDEA, smoke-testy w Vite dev server + DevTools po każdym commicie.
+
+Granice narzędzi — co AI robiła źle i gdzie musiałem wkroczyć ręcznie: AI nie odpaliła aplikacji, w tym przypadku nie wykorzytałem playwright i Gemini Nano Banana do porównywania zrzuytów ekranu z docelowym wzorcem bo takiego nie było. Brakujący klucz i18n (`app.title`) przeszedł przez pełny multi-agent review-loop i wykryłem go dopiero w przeglądarce — nagłówek wyświetlał dosłownie „app.title". vue-i18n v9 zwraca ścieżkę klucza jako string gdy klucz nie istnieje, więc żaden statyczny audyt tego nie złapie. Smoke test w przeglądarce zostaje obowiązkiem człowieka — i to jest świadoma granica, nie luka w procesie.
+
 
 ## Workflow
 
@@ -73,10 +75,7 @@ Siódmy to był pełny audit dostępności po zamknięciu specyfikacji. Patrzę 
 Bump do `vite ^7` (najmniejszy major, który zamyka oba — fix gated > 6.4.1) i `@vitejs/plugin-vue ^6` (peer compat). `vitest 4.1.5` zostało, już deklaruje `peer: vite ^6 || ^7 || ^8`.
 Po zmianie: `npm audit` → 0 vulnerabilities, `vite build` → 1.63 s, 27 testów zielono.
 
-Dziewiąty wyszedł w prostym runtime checku — nagłówek pokazywał literal „app.title" zamiast nazwy aplikacji.
-Odsyłka istnieje w `App.vue:4` (i18n landing), ale klucz nigdy nie został dodany do `pl.json` ani `en.json`.
-Vue-i18n v9 default missing-handler zwraca samą ścieżkę klucza jako string. AI tego w pełnym holistycznym review nie wyłapała — nie odpaliła aplikacji.
-Smoke test w przeglądarce zostaje obowiązkiem człowieka. Naprawione wartościami z `index.html:6` („Wiki Knowledge Graph" / „Graf wiedzy") — oneliner, ale przypomnienie że review oparty wyłącznie na czytaniu kodu nie zastąpi runtime'u.
+Dziewiąty wyszedł w prostym runtime checku — nagłówek pokazywał literal „app.title" zamiast nazwy aplikacji. Klucz istniał w `App.vue:4` ale nigdy nie trafił do `pl.json`/`en.json`. Naprawione onelinerem — ale to właśnie ten przypadek opisałem wyżej jako granicę statycznego review.
 
 ## Nowe zależności
 
