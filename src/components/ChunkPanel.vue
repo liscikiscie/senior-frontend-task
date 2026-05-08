@@ -59,6 +59,7 @@
 <script setup>
 import { computed } from 'vue'
 import { marked } from 'marked'
+import DOMPurify from 'dompurify'
 import { useI18n } from 'vue-i18n'
 import { formatTimeRange } from '../utils/format.js'
 import { TYPE_LABELS } from '../utils/types.js'
@@ -72,11 +73,11 @@ const { t } = useI18n()
 
 const outLinks    = computed(() => props.chunk.links.filter(l => l.direction === 'out'))
 const inLinks     = computed(() => props.chunk.links.filter(l => l.direction === 'in'))
-// `marked` does NOT sanitize HTML — we render its output via v-html. Safe
-// today because body_markdown comes from the static mock dataset (T3, no
-// user input). If this ever consumes server/CMS content, plug in DOMPurify
-// (or marked's `sanitizer` hook) before mounting it back onto the DOM.
-const parsedBody  = computed(() => marked.parse(props.chunk.body_markdown || ''))
+// `marked` does NOT sanitize HTML — we run its output through DOMPurify
+// before v-html. Defense in depth: even though body_markdown is T3 mock
+// data today, the rendering pipeline must stay safe if a future caller
+// feeds it server/CMS content.
+const parsedBody  = computed(() => DOMPurify.sanitize(marked.parse(props.chunk.body_markdown || '')))
 </script>
 
 <style src="./chunk-panel.css" scoped></style>
