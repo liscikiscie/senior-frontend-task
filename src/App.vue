@@ -202,16 +202,23 @@ function delay(ms) {
   })
 }
 
+// Token-guarded async watcher: a fast A → B click (within CHUNK_LOAD_DELAY_MS)
+// would otherwise let A's awaited continuation overwrite B's result. Each
+// invocation captures its own requestId; only the latest survives the await.
+let chunkLoadRequestId = 0
 watch(selectedSlug, async function loadChunkForSlug(slug) {
+  const requestId = ++chunkLoadRequestId
   cancelPanelOpenTimer()
   if (!slug) {
     panelOpen.value = false
     chunkSlug.value = null
+    chunkLoading.value = false
     return
   }
   if (!panelOpen.value) schedulePanelOpen()
   chunkLoading.value = true
   await delay(CHUNK_LOAD_DELAY_MS)
+  if (requestId !== chunkLoadRequestId) return
   chunkSlug.value = slug
   chunkLoading.value = false
 })
