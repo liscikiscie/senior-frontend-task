@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { matchedSlugs } from './search.js'
+import { matchedSlugs } from '../search.js'
 
 const NODES = [
   { slug: 'pid',          title: 'PID Controller' },

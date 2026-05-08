@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest'
-import { usePathMode } from './usePathMode.js'
+import { describe, it, expect } from 'vitest'
+import { usePathMode } from '../usePathMode.js'
 
 const LINKS = [
   { source: 'a', target: 'b' },

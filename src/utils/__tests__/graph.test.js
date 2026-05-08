@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { findShortestPath, linkId } from './graph.js'
+import { findShortestPath, linkId } from '../graph.js'
 
 describe('findShortestPath', () => {
   it('finds direct A→B path', () => {
